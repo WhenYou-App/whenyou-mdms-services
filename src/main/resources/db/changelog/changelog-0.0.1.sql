@@ -1,0 +1,10 @@
+-- CREATE TABLE security_login (
+--        id                             UUID NOT NULL PRIMARY KEY,
+--        phone_number                   VARCHAR(20) NOT NULL,
+--        password                       VARCHAR(255) NOT NULL,
+--        created_at                     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--        created_by                     UUID,
+--        modified_by                    UUID,
+--        modified_date                  TIMESTAMP,
+--        last_login                     TIMESTAMP
+--);
