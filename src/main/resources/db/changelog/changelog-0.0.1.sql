@@ -3,7 +3,11 @@ CREATE TABLE m_districts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(150) NOT NULL,
     name_in_local VARCHAR(150),
-    status BOOLEAN DEFAULT TRUE
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP,
+    created_by VARCHAR(255),
+    modified_by VARCHAR(255),
+    modified_date TIMESTAMP
 );
 
 -- Table: m_pincode
@@ -12,5 +16,9 @@ CREATE TABLE m_pincode (
     name VARCHAR(150) NOT NULL,
     name_in_local VARCHAR(150),
     pincode VARCHAR(10) NOT NULL,
-    status BOOLEAN DEFAULT TRUE
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP,
+    created_by VARCHAR(255),
+    modified_by VARCHAR(255),
+    modified_date TIMESTAMP
 );
