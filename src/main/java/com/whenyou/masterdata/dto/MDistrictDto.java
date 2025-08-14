@@ -1,6 +1,9 @@
 package com.whenyou.masterdata.dto;
 
+import jakarta.persistence.Column;
 import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -8,7 +11,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MDistrictDto {
-    private Long id;
+    private UUID id;
+    private Long excelId;
     private String name;
     private String nameInLocal;
     private boolean status;

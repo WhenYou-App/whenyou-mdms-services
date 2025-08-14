@@ -3,6 +3,8 @@ package com.whenyou.masterdata.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
@@ -14,7 +16,10 @@ import lombok.*;
 public class MDistrict extends Auditor {
     @Id
     @GeneratedValue
-    private Long id;
+    private UUID id;
+
+    @Column
+    private Long excelId;
 
     @Column
     private String name;

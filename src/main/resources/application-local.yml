@@ -39,6 +39,12 @@ spring:
 
       ddl-auto: none
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   security:
     jwt:
       secret: IwXWuCZRv/a7SXuV/GIZvO/zELE00N5jYoXXoF3Y4ZPl+A62V4nwthL13vCzQiJ17DzWYkroiAonYbRX9fHHwA==
@@ -51,6 +57,7 @@ sms:
 
 login-service:
   url: http://localhost:8083/whenyou-vendor-onboarding-services
+
 
 
 
