@@ -19,9 +19,9 @@ public class InitController {
     @Autowired InitService initService;
 
     @PostMapping("/data")
-    public ResponseEntity<Message> initData(@RequestParam(value = "districtsFile", required = false) MultipartFile districtsFile, @RequestParam(value = "pincodesFile", required = false) MultipartFile pincodesFile, @RequestParam(value = "carsFile", required = false) MultipartFile carsFile) {
+    public ResponseEntity<Message> initData(@RequestParam(value = "districtsFile", required = false) MultipartFile districtsFile, @RequestParam(value = "pincodesFile", required = false) MultipartFile pincodesFile, @RequestParam(value = "vehiclesFile", required = false) MultipartFile vehiclesFile) {
         try {
-            initService.initData(districtsFile, pincodesFile, carsFile);
+            initService.initData(districtsFile, pincodesFile, vehiclesFile);
             return ResponseEntity.ok(Message.builder().status(true).message("Initialization completed successfully!").build());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.builder().status(false).message("Error processing files: " + e.getMessage()).build());

@@ -2,6 +2,7 @@ package com.whenyou.masterdata.excelutil;
 
 import com.whenyou.masterdata.entity.MDistrict;
 import com.whenyou.masterdata.entity.MPincode;
+import com.whenyou.masterdata.entity.MVehicle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -116,25 +117,36 @@ public class ExcelUtility {
         }
     }
 
-//    public static List<Car> excelToCars(InputStream is) throws IOException {
-//        Workbook workbook = new XSSFWorkbook(is);
-//        Sheet sheet = workbook.getSheetAt(0);
-//        List<Car> cars = new ArrayList<>();
-//        Iterator<Row> rows = sheet.iterator();
-//        int rowNumber = 0;
-//        while (rows.hasNext()) {
-//            Row row = rows.next();
-//            if (rowNumber++ == 0) continue; // Skip header
-//    if (row == null) continue;
-//            Car car = new Car();
-//            car.setId((long) row.getCell(0).getNumericCellValue());
-//            car.setModel(row.getCell(1).getStringCellValue());
-//            car.setBrand(row.getCell(2).getStringCellValue());
-//            car.setPincode(row.getCell(3).getStringCellValue());
-//            car.setStatus(row.getCell(4).getBooleanCellValue());
-//            cars.add(car);
-//        }
-//        workbook.close();
-//        return cars;
-//    }
+    public static List<MVehicle> excelToVehicles(InputStream is) throws IOException {
+        List<MVehicle> vehicles = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue; // Skip header row
+                if (isRowEmpty(row)) continue; // Skip empty rows
+                MVehicle vehicle = new MVehicle();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    try {
+                        vehicle.setExcelId(Long.parseLong(idStr));
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid Excel ID at row " + rowNumber + ": " + idStr);
+                    }
+                }
+                vehicle.setBrandName(getCellValueAsString(row.getCell(1)));
+                vehicle.setModelType(getCellValueAsString(row.getCell(2)));
+                vehicle.setModelName(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    vehicle.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                vehicles.add(vehicle);
+            }
+        }
+        return vehicles;
+    }
+
 }

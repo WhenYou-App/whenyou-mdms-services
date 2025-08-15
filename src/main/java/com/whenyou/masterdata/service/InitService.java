@@ -2,9 +2,11 @@ package com.whenyou.masterdata.service;
 
 import com.whenyou.masterdata.entity.MDistrict;
 import com.whenyou.masterdata.entity.MPincode;
+import com.whenyou.masterdata.entity.MVehicle;
 import com.whenyou.masterdata.excelutil.ExcelUtility;
 import com.whenyou.masterdata.repository.MDistrictRepository;
 import com.whenyou.masterdata.repository.MPincodeRepository;
+import com.whenyou.masterdata.repository.MVehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,10 @@ import java.util.List;
 public class InitService {
     @Autowired MDistrictRepository districtRepository;
     @Autowired MPincodeRepository pincodeRepository;
-//    @Autowired
-//    private CarRepository carRepository;
+    @Autowired MVehicleRepository vehicleRepository;
 
     @Transactional
-    public void initData(MultipartFile districtsFile, MultipartFile pincodesFile, MultipartFile carsFile) throws IOException {
+    public void initData(MultipartFile districtsFile, MultipartFile pincodesFile, MultipartFile vehiclesFile) throws IOException {
         // Process Districts if file is present and not empty
         if (districtsFile != null && !districtsFile.isEmpty()) {
             List<MDistrict> districts = ExcelUtility.excelToDistricts(districtsFile.getInputStream());
@@ -59,21 +60,23 @@ public class InitService {
             }
         }
 
-
-
-        // Process Cars if file is present and not empty
-//    if (carsFile != null && !carsFile.isEmpty()) {
-//        List<Car> cars = ExcelUtility.excelToCars(carsFile.getInputStream());
-//        for (Car car : cars) {
-//            carRepository.findById(car.getId())
-//                    .ifPresentOrElse(existing -> {
-//                        existing.setModel(car.getModel());
-//                        existing.setBrand(car.getBrand());
-//                        existing.setPincode(car.getPincode());
-//                        existing.setStatus(car.isStatus());
-//                        carRepository.save(existing);
-//                    }, () -> carRepository.save(car));
-//        }
-//    }
+        // Process Vehicle if file is present and not empty
+        if (vehiclesFile != null && !vehiclesFile.isEmpty()) {
+            List<MVehicle> vehicles = ExcelUtility.excelToVehicles(vehiclesFile.getInputStream());
+            for (MVehicle vehicle : vehicles) {
+                vehicleRepository.findByExcelId(vehicle.getExcelId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setBrandName(vehicle.getBrandName());
+                            existing.setModelName(vehicle.getModelName());
+                            existing.setModelType(vehicle.getModelType());
+                            existing.setStatus(vehicle.isStatus());
+                            vehicleRepository.save(existing);
+                        }, () -> {
+                            // New pincode entry
+                            vehicle.setId(null); // Let UUID be auto-generated
+                            vehicleRepository.save(vehicle);
+                        });
+            }
+        }
     }
 }

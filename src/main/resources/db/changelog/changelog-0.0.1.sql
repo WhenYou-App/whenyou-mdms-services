@@ -24,3 +24,17 @@ CREATE TABLE m_pincode (
     modified_by UUID,
     modified_date TIMESTAMP
 );
+
+-- Table: m_vehicle
+CREATE TABLE m_vehicle (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    excel_id BIGINT NOT NULL UNIQUE, -- Excel ID stored here
+    brand_name VARCHAR(150) NOT NULL,
+    model_type VARCHAR(150),
+    model_name VARCHAR(150),
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP,
+    created_by UUID,
+    modified_by UUID,
+    modified_date TIMESTAMP
+);

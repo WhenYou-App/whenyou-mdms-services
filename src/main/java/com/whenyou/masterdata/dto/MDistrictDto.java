@@ -1,6 +1,5 @@
 package com.whenyou.masterdata.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.util.UUID;

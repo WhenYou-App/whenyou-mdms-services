@@ -3,17 +3,16 @@ package com.whenyou.masterdata.dto;
 import lombok.*;
 
 import java.util.UUID;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MPincodeDto {
+public class MVehicleDto {
     private UUID id;
     private Long excelId;
-    private String name;
-    private String nameInLocal;
-    private String pincode;
+    private String brandName;
+    private String modelType;
+    private String modelName;
     private boolean status;
 }

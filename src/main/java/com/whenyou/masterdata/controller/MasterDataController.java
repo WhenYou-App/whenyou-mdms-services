@@ -2,6 +2,7 @@ package com.whenyou.masterdata.controller;
 
 import com.whenyou.masterdata.dto.MDistrictDto;
 import com.whenyou.masterdata.dto.MPincodeDto;
+import com.whenyou.masterdata.dto.MVehicleDto;
 import com.whenyou.masterdata.service.MasterDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +25,25 @@ public class MasterDataController {
 
     @Autowired MasterDataService masterDataService;
 
-    // =========================================== Master Data Controller =============================================================
+    // =========================================== Districts Controller =============================================================
 
     @GetMapping("/districts")
     public ResponseEntity<List<MDistrictDto>> getDistricts() {
         return ResponseEntity.ok(masterDataService.getActiveDistricts());
     }
 
+    // =========================================== Pincodes Controller ===============================================================
+
     @GetMapping("/pincodes")
     public ResponseEntity<List<MPincodeDto>> getPincodes() {
         return ResponseEntity.ok(masterDataService.getActivePincodes());
+    }
+
+    // =========================================== Vehicle Controller =================================================
+
+    @GetMapping("/vehicles")
+    public ResponseEntity<List<MVehicleDto>> getVehicles() {
+        return ResponseEntity.ok(masterDataService.getActiveVehicles());
     }
 
 }
