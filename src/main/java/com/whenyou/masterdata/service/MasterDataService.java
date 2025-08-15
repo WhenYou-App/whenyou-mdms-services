@@ -20,14 +20,14 @@ public class MasterDataService {
 
     //=========================================== District Service ======================================================
 
-    public List<MDistrictDto> getDistricts() {
-        return mDistrictRepository.findAll().stream().map(fromDistrict()).collect(Collectors.toList());
+    public List<MDistrictDto> getActiveDistricts() {
+        return mDistrictRepository.findByStatus(true).stream().map(fromDistrict()).collect(Collectors.toList());
     }
 
     //=========================================== Pincode Service ======================================================
 
-    public List<MPincodeDto> getPincodes() {
-        return mPincodeRepository.findAll().stream().map(fromMPincode()).collect(Collectors.toList());
+    public List<MPincodeDto> getActivePincodes() {
+        return mPincodeRepository.findByStatus(true).stream().map(fromMPincode()).collect(Collectors.toList());
     }
 
     //=========================================== District Converter Function ======================================================

@@ -20,12 +20,9 @@ public class ExcelUtility {
             int rowNumber = 0;
             while (rows.hasNext()) {
                 Row row = rows.next();
-                // Skip header
-                if (rowNumber++ == 0) continue;
-                // Skip empty rows
-                if (isRowEmpty(row)) continue;
+                if (rowNumber++ == 0) continue; // Skip header
+                if (isRowEmpty(row)) continue; // Skip empty rows
                 MDistrict district = new MDistrict();
-                // Excel ID
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
                     try {
@@ -34,11 +31,8 @@ public class ExcelUtility {
                         throw new IllegalArgumentException("Invalid Excel ID at row " + rowNumber + ": " + idStr);
                     }
                 }
-                // Name
                 district.setName(getCellValueAsString(row.getCell(1)));
-                // Name in Local
                 district.setNameInLocal(getCellValueAsString(row.getCell(2)));
-                // Status
                 String statusStr = getCellValueAsString(row.getCell(3));
                 if (statusStr != null && !statusStr.isEmpty()) {
                     district.setStatus(Boolean.parseBoolean(statusStr));
@@ -72,9 +66,8 @@ public class ExcelUtility {
             while (rows.hasNext()) {
                 Row row = rows.next();
                 if (rowNumber++ == 0) continue; // Skip header row
-                if (isRowEmpty(row)) continue;
+                if (isRowEmpty(row)) continue; // Skip empty rows
                 MPincode pincode = new MPincode();
-                // Excel ID (Long)
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
                     try {

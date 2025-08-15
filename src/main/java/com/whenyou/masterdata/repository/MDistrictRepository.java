@@ -10,5 +10,7 @@ import java.util.UUID;
 @Repository
 public interface MDistrictRepository extends JpaRepository<MDistrict, UUID> {
 
-    public Optional<Object> findByExcelId(Long id);
+    public Optional<MDistrict> findByExcelId(Long id);
+
+    Optional<MDistrict> findByStatus(boolean status);
 }

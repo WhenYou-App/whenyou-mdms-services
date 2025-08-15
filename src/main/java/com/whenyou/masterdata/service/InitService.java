@@ -27,8 +27,7 @@ public class InitService {
             List<MDistrict> districts = ExcelUtility.excelToDistricts(districtsFile.getInputStream());
             for (MDistrict district : districts) {
                 districtRepository.findByExcelId(district.getExcelId())
-                        .ifPresentOrElse(existingObj -> {
-                            MDistrict existing = (MDistrict) existingObj; // Cast to MDistrict
+                        .ifPresentOrElse(existing -> {
                             existing.setName(district.getName());
                             existing.setNameInLocal(district.getNameInLocal());
                             existing.setStatus(district.isStatus());
@@ -46,8 +45,7 @@ public class InitService {
             List<MPincode> pincodes = ExcelUtility.excelToPincodes(pincodesFile.getInputStream());
             for (MPincode pincode : pincodes) {
                 pincodeRepository.findByExcelId(pincode.getExcelId())
-                        .ifPresentOrElse(existingObj -> {
-                            MPincode existing = (MPincode) existingObj; // Cast to MPincode
+                        .ifPresentOrElse(existing -> {
                             existing.setName(pincode.getName());
                             existing.setNameInLocal(pincode.getNameInLocal());
                             existing.setPincode(pincode.getPincode());

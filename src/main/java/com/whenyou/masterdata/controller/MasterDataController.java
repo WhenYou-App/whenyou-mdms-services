@@ -28,12 +28,12 @@ public class MasterDataController {
 
     @GetMapping("/districts")
     public ResponseEntity<List<MDistrictDto>> getDistricts() {
-        return ResponseEntity.ok(masterDataService.getDistricts());
+        return ResponseEntity.ok(masterDataService.getActiveDistricts());
     }
 
     @GetMapping("/pincodes")
     public ResponseEntity<List<MPincodeDto>> getPincodes() {
-        return ResponseEntity.ok(masterDataService.getPincodes());
+        return ResponseEntity.ok(masterDataService.getActivePincodes());
     }
 
 }
