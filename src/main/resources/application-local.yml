@@ -56,7 +56,7 @@ sms:
     url: https://thesmsbuddy.com/api/v1/sms/send
 
 login-service:
-  url: http://localhost:8083/whenyou-vendor-onboarding-services
+  url: http://whenyou-vendor-onboarding-services
 
 
 

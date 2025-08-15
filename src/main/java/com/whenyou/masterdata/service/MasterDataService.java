@@ -1,5 +1,7 @@
 package com.whenyou.masterdata.service;
 
+import com.whenyou.masterdata.dto.MDistrictDto;
+import com.whenyou.masterdata.dto.MPincodeDto;
 import com.whenyou.masterdata.entity.MDistrict;
 import com.whenyou.masterdata.entity.MPincode;
 import com.whenyou.masterdata.repository.MDistrictRepository;
@@ -8,33 +10,58 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class MasterDataService {
     @Autowired MPincodeRepository mPincodeRepository;
     @Autowired MDistrictRepository mDistrictRepository;
 
-    public boolean isDistrictsAvailable() {
-        return mDistrictRepository.count()>0;
+    //=========================================== District Service ======================================================
+
+    public List<MDistrictDto> getDistricts() {
+        return mDistrictRepository.findAll().stream().map(fromDistrict()).collect(Collectors.toList());
     }
 
-    public boolean isPincodesAvailable() {
-        return mPincodeRepository.count()>0;
+    //=========================================== Pincode Service ======================================================
+
+    public List<MPincodeDto> getPincodes() {
+        return mPincodeRepository.findAll().stream().map(fromMPincode()).collect(Collectors.toList());
     }
 
-    public void createDistricts(List<MDistrict> mDistricts) {
-        mDistrictRepository.saveAll(mDistricts);
+    //=========================================== District Converter Function ======================================================
+
+    public Function<MDistrict, MDistrictDto> fromDistrict() {
+        return new Function<MDistrict, MDistrictDto>() {
+            @Override
+            public MDistrictDto apply(MDistrict mDistrict) {
+                return MDistrictDto.builder()
+                        .id(mDistrict.getId())
+                        .excelId(mDistrict.getExcelId())
+                        .name(mDistrict.getName())
+                        .nameInLocal(mDistrict.getNameInLocal())
+                        .status(mDistrict.isStatus())
+                        .build();
+            }
+        };
     }
 
-    public void createPincodes(List<MPincode> mPincodes) {
-        mPincodeRepository.saveAll(mPincodes);
-    }
+    //=========================================== Pincode Converter Function ======================================================
 
-    public List<MDistrict> getMDistricts() {
-        return mDistrictRepository.findAll();
-    }
-
-    public List<MPincode> getMPincodes() {
-        return mPincodeRepository.findAll();
+    public Function<MPincode, MPincodeDto> fromMPincode() {
+        return new Function<MPincode, MPincodeDto>() {
+            @Override
+            public MPincodeDto apply(MPincode mPincode) {
+                return MPincodeDto.builder()
+                        .id(mPincode.getId())
+                        .excelId(mPincode.getExcelId())
+                        .name(mPincode.getName())
+                        .nameInLocal(mPincode.getNameInLocal())
+                        .pincode(mPincode.getPincode())
+                        .status(mPincode.isStatus())
+                        .build();
+            }
+        };
     }
 }
