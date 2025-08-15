@@ -32,8 +32,8 @@ public class AuthFilter extends OncePerRequestFilter {
                 path.contains("/swagger-ui") ||
                 path.contains("/swagger-resources") ||
                 path.contains("/webjars") ||
-                path.contains("/configuration")) {
-
+                path.contains("/configuration") ||
+                path.contains("/api/init/data")) {
             filterChain.doFilter(request, response);
             return;
         }

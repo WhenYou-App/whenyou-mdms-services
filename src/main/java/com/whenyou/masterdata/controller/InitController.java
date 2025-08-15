@@ -14,28 +14,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/master")
+@RequestMapping("/api/init")
 public class InitController {
     @Autowired InitService initService;
 
-    @PostMapping("/init")
+    @PostMapping("/data")
     public ResponseEntity<Message> initData(@RequestParam(value = "districtsFile", required = false) MultipartFile districtsFile, @RequestParam(value = "pincodesFile", required = false) MultipartFile pincodesFile, @RequestParam(value = "carsFile", required = false) MultipartFile carsFile) {
         try {
             initService.initData(districtsFile, pincodesFile, carsFile);
-
-            return ResponseEntity.ok(
-                    Message.builder()
-                            .status(true)
-                            .message("Initialization completed successfully!")
-                            .build()
-            );
-
+            return ResponseEntity.ok(Message.builder().status(true).message("Initialization completed successfully!").build());
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Message.builder()
-                            .status(false)
-                            .message("Error processing files: " + e.getMessage())
-                            .build());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.builder().status(false).message("Error processing files: " + e.getMessage()).build());
         }
     }
 }
