@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/master")
@@ -35,15 +37,20 @@ public class MasterDataController {
     // =========================================== Pincodes Controller ===============================================================
 
     @GetMapping("/pincodes")
-    public ResponseEntity<List<MPincodeDto>> getPincodes() {
-        return ResponseEntity.ok(masterDataService.getActivePincodes());
+    public ResponseEntity<List<MPincodeDto>> getPincodes(@RequestParam Optional<String> pincode) {
+        return ResponseEntity.ok(masterDataService.getActivePincodes(pincode));
     }
 
     // =========================================== Vehicle Controller =================================================
 
+    @GetMapping("/vehicle-brands")
+    public ResponseEntity<List<String>> getVehicleBrands() {
+        return ResponseEntity.ok(masterDataService.getActiveVehicleBrands());
+    }
+
     @GetMapping("/vehicles")
-    public ResponseEntity<List<MVehicleDto>> getVehicles() {
-        return ResponseEntity.ok(masterDataService.getActiveVehicles());
+    public ResponseEntity<List<MVehicleDto>> getVehicles(@RequestParam Optional<String> brandName, @RequestParam Optional<String> modelType, @RequestParam Optional<String> modelName) {
+        return ResponseEntity.ok(masterDataService.getActiveVehicles(brandName, modelType, modelName));
     }
 
 }

@@ -13,4 +13,5 @@ public interface MPincodeRepository extends JpaRepository<MPincode, UUID> {
     public Optional<MPincode> findByExcelId(Long excelId);
 
     public List<MPincode> findByStatus(boolean status);
+    public List<MPincode> findByStatusAndPincode(boolean status, String pincode);
 }

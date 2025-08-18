@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,14 +31,39 @@ public class MasterDataService {
 
     //=========================================== Pincode Service ======================================================
 
-    public List<MPincodeDto> getActivePincodes() {
-        return mPincodeRepository.findByStatus(true).stream().map(fromMPincode()).collect(Collectors.toList());
+    public List<MPincodeDto> getActivePincodes(Optional<String> pincode) {
+        if (pincode.isPresent()) {
+            return mPincodeRepository.findByStatusAndPincode(true, pincode.get()).stream().map(fromMPincode()).collect(Collectors.toList());
+        }else {
+            return mPincodeRepository.findByStatus(true).stream().map(fromMPincode()).collect(Collectors.toList());
+        }
     }
 
     //=========================================== Vehicle Service ======================================================
 
-    public List<MVehicleDto> getActiveVehicles() {
-        return mVehicleRepository.findByStatus(true).stream().map(fromVehicle()).collect(Collectors.toList());
+    public List<String> getActiveVehicleBrands() {
+        return mVehicleRepository.findByStatus(true).stream()
+                .map(vehicle -> fromVehicle().apply(vehicle).getBrandName()).distinct().collect(Collectors.toList());
+    }
+
+    public List<MVehicleDto> getActiveVehicles(Optional<String> brandName, Optional<String> modelType, Optional<String> modelName) {
+        if (brandName.isPresent() && modelType.isPresent() && modelName.isPresent()) {
+            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelTypeIgnoreCaseAndModelNameIgnoreCase(true, brandName.get(), modelType.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (brandName.isPresent() && modelType.isPresent()) {
+            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelTypeIgnoreCase(true, brandName.get(), modelType.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (brandName.isPresent() && modelName.isPresent()) {
+            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelNameIgnoreCase(true, brandName.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (modelType.isPresent() && modelName.isPresent()) {
+            return mVehicleRepository.findByStatusAndModelTypeIgnoreCaseAndModelNameIgnoreCase(true, modelType.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (modelType.isPresent()) {
+            return mVehicleRepository.findByStatusAndModelTypeIgnoreCase(true, modelType.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (modelName.isPresent()) {
+            return mVehicleRepository.findByStatusAndModelNameIgnoreCase(true, modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else if (brandName.isPresent()) {
+            return mVehicleRepository.findByStatusAndBrandNameIgnoreCase(true, brandName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+        } else {
+            return mVehicleRepository.findByStatus(true).stream().map(fromVehicle()).collect(Collectors.toList());
+        }
     }
 
     //=========================================== District Converter Function ======================================================

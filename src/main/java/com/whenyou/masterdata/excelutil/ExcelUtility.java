@@ -1,8 +1,6 @@
 package com.whenyou.masterdata.excelutil;
 
-import com.whenyou.masterdata.entity.MDistrict;
-import com.whenyou.masterdata.entity.MPincode;
-import com.whenyou.masterdata.entity.MVehicle;
+import com.whenyou.masterdata.entity.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -147,6 +145,141 @@ public class ExcelUtility {
             }
         }
         return vehicles;
+    }
+
+    public static List<MJewel> excelToJewels(InputStream is) throws IOException {
+        List<MJewel> jewels = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue; // Skip header
+                if (isRowEmpty(row)) continue;
+
+                MJewel jewel = new MJewel();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    jewel.setExcelId(Long.parseLong(idStr));
+                }
+                jewel.setProductType(getCellValueAsString(row.getCell(1)));
+                jewel.setMaterial(getCellValueAsString(row.getCell(2)));
+                jewel.setPurity(getCellValueAsString(row.getCell(3)));
+                jewel.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
+
+                jewels.add(jewel);
+            }
+        }
+        return jewels;
+    }
+
+    public static List<MServeType> excelToServeTypes(InputStream is) throws IOException {
+        List<MServeType> serveTypes = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MServeType serveType = new MServeType();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    serveType.setExcelId(Long.parseLong(idStr));
+                }
+                serveType.setServeType(getCellValueAsString(row.getCell(1)));
+                serveType.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(2))));
+
+                serveTypes.add(serveType);
+            }
+        }
+        return serveTypes;
+    }
+
+    public static List<MMakeOver> excelToMakeOvers(InputStream is) throws IOException {
+        List<MMakeOver> makeOvers = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MMakeOver makeOver = new MMakeOver();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    makeOver.setExcelId(Long.parseLong(idStr));
+                }
+                makeOver.setPackageName(getCellValueAsString(row.getCell(1)));
+                makeOver.setCategory(getCellValueAsString(row.getCell(2)));
+                makeOver.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+
+                makeOvers.add(makeOver);
+            }
+        }
+        return makeOvers;
+    }
+
+    public static List<MBoutiqueWear> excelToBoutiqueWears(InputStream is) throws IOException {
+        List<MBoutiqueWear> boutiqueWears = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MBoutiqueWear wear = new MBoutiqueWear();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    wear.setExcelId(Long.parseLong(idStr));
+                }
+                wear.setTypeOfWear(getCellValueAsString(row.getCell(1)));
+                wear.setCategory(getCellValueAsString(row.getCell(2)));
+                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+
+                boutiqueWears.add(wear);
+            }
+        }
+        return boutiqueWears;
+    }
+
+    public static List<MBoutiqueWearBrand> excelToBoutiqueWearBrands(InputStream is) throws IOException {
+        List<MBoutiqueWearBrand> brands = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MBoutiqueWearBrand brand = new MBoutiqueWearBrand();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    brand.setExcelId(Long.parseLong(idStr));
+                }
+                brand.setBrandName(getCellValueAsString(row.getCell(1)));
+                brand.setStyle(getCellValueAsString(row.getCell(2)));
+                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+
+                brands.add(brand);
+            }
+        }
+        return brands;
     }
 
 }

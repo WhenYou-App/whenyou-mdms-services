@@ -1,5 +1,6 @@
 package com.whenyou.masterdata.config;
 
+import com.whenyou.masterdata.model.auth.UserPrincipal;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -50,13 +52,13 @@ public class AuthFilter extends OncePerRequestFilter {
                 response.getWriter().write("Invalid token");
                 return;
             }
-            String phoneNumber = jwtUtil.getPhoneNumber(token);
             List<String> roles = jwtUtil.getRoles(token);
             List<GrantedAuthority> authorities = new ArrayList<>();
             for (String role : roles) {
                 authorities.add(new SimpleGrantedAuthority(role));
             }
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(phoneNumber, null, authorities);
+            UserPrincipal userPrincipal = jwtUtil.getUserPrincipalFromToken(token);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         } catch (JwtException ex) {

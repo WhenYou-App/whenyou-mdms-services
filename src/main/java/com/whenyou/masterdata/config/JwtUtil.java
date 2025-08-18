@@ -1,5 +1,6 @@
 package com.whenyou.masterdata.config;
 
+import com.whenyou.masterdata.model.auth.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -64,6 +66,19 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public UserPrincipal getUserPrincipalFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // same secret as Auth service
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        UUID userId = UUID.fromString(claims.get("userId", String.class));
+        String phoneNumber = claims.getSubject();
+
+        return new UserPrincipal(userId, phoneNumber);
     }
 }
 
