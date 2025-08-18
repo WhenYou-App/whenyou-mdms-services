@@ -140,6 +140,7 @@ public class InitService {
                         .ifPresentOrElse(existing -> {
                             existing.setTypeOfWear(boutiqueWear.getTypeOfWear());
                             existing.setCategory(boutiqueWear.getCategory());
+                            existing.setAttireType(boutiqueWear.getAttireType());
                             existing.setStatus(boutiqueWear.isStatus());
                             boutiqueWearRepository.save(existing);
                         }, () -> {
@@ -156,7 +157,8 @@ public class InitService {
                 boutiqueWearBrandRepository.findByExcelId(brand.getExcelId())
                         .ifPresentOrElse(existing -> {
                             existing.setBrandName(brand.getBrandName());
-                            existing.setStyle(brand.getStyle());
+                            existing.setCategory(brand.getCategory());
+                            existing.setAttireType(brand.getAttireType());
                             existing.setStatus(brand.isStatus());
                             boutiqueWearBrandRepository.save(existing);
                         }, () -> {

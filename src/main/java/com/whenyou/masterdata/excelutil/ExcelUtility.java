@@ -245,9 +245,10 @@ public class ExcelUtility {
                 if (idStr != null && !idStr.isEmpty()) {
                     wear.setExcelId(Long.parseLong(idStr));
                 }
-                wear.setTypeOfWear(getCellValueAsString(row.getCell(1)));
-                wear.setCategory(getCellValueAsString(row.getCell(2)));
-                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+                wear.setCategory(getCellValueAsString(row.getCell(1)));
+                wear.setTypeOfWear(getCellValueAsString(row.getCell(2)));
+                wear.setAttireType(getCellValueAsString(row.getCell(3)));
+                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
 
                 boutiqueWears.add(wear);
             }
@@ -272,9 +273,10 @@ public class ExcelUtility {
                 if (idStr != null && !idStr.isEmpty()) {
                     brand.setExcelId(Long.parseLong(idStr));
                 }
-                brand.setBrandName(getCellValueAsString(row.getCell(1)));
-                brand.setStyle(getCellValueAsString(row.getCell(2)));
-                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+                brand.setCategory(getCellValueAsString(row.getCell(1)));
+                brand.setBrandName(getCellValueAsString(row.getCell(2)));
+                brand.setAttireType(getCellValueAsString(row.getCell(3)));
+                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
 
                 brands.add(brand);
             }

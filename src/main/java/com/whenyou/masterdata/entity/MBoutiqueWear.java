@@ -28,5 +28,8 @@ public class MBoutiqueWear extends Auditor {
     private String category;
 
     @Column
+    private String attireType;
+
+    @Column
     private boolean status;
 }

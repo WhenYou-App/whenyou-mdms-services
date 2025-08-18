@@ -25,7 +25,10 @@ public class MBoutiqueWearBrand extends Auditor {
     private String brandName;
 
     @Column
-    private String style;
+    private String category;
+
+    @Column
+    private String attireType;
 
     @Column
     private boolean status;
