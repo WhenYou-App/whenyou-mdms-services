@@ -13,13 +13,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class MasterDataService {
-    @Autowired MPincodeRepository mPincodeRepository;
-    @Autowired MDistrictRepository mDistrictRepository;
-    @Autowired MVehicleRepository mVehicleRepository;
     @Autowired MJewelRepository jewelsRepository;
-    @Autowired MServeTypeRepository serveTypeRepository;
+    @Autowired MPincodeRepository mPincodeRepository;
+    @Autowired MVehicleRepository mVehicleRepository;
     @Autowired MMakeOverRepository makeOverRepository;
+    @Autowired MDistrictRepository mDistrictRepository;
+    @Autowired MServeTypeRepository serveTypeRepository;
+    @Autowired MTextileWearRepository textileWearRepository;
     @Autowired MBoutiqueWearRepository boutiqueWearRepository;
+    @Autowired MJewelMaterialRepository jewelMaterialRepository;
+    @Autowired MTextileWearBrandRepository textileWearBrandRepository;
     @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
 
     //=========================================== District Service ======================================================
@@ -67,15 +70,56 @@ public class MasterDataService {
 
     //=========================================== Jewel Service ======================================================
 
+    public List<MJewelDto> getActiveJewels() {
+        return jewelsRepository.findByStatus(true).stream().map(fromJewel()).collect(Collectors.toList());
+    }
+
     //============================================ Jewel Material Service ======================================================
+
+    public List<String> getActiveJewelMaterials() {
+        return jewelMaterialRepository.findByStatus(true).stream()
+                .map(jewelMaterial -> fromJewelMaterial().apply(jewelMaterial).getMaterial()).distinct().collect(Collectors.toList());
+    }
+
+    public List<MJewelMaterialDto> getMaterialPurities(String material) {
+        return jewelMaterialRepository.findByStatus(true).stream().map(fromJewelMaterial()).collect(Collectors.toList());
+    }
 
     //=========================================== Catering Serve Type Service ======================================================
 
-    //=========================================== Make Over Service Service ======================================================
+    public List<MServeTypeDto> getActiveServeTypes() {
+        return serveTypeRepository.findByStatus(true).stream().map(fromServeType()).collect(Collectors.toList());
+    }
+
+    //=========================================== Make Over Service ======================================================
+
+    public List<MMakeOverDto> getActiveMakeOvers(String category) {
+        return makeOverRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromMakeOver()).collect(Collectors.toList());
+    }
 
     //=========================================== Boutique Wear Service ======================================================
 
+    public List<MBoutiqueWearDto> getActiveBoutiqueWears(String category) {
+        return boutiqueWearRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromBoutiqueWear()).collect(Collectors.toList());
+    }
+
     //=========================================== Boutique Wear Brand Service ======================================================
+
+    public List<MBoutiqueWearBrandDto> getActiveBoutiqueWearBrands(String category, String attireType) {
+        return boutiqueWearBrandRepository.findByStatusAndCategoryIgnoreCaseAndAttireTypeIgnoreCase(true, category, attireType).stream().map(fromBoutiqueWearBrand()).collect(Collectors.toList());
+    }
+
+    //=========================================== Textile Wear Service ======================================================
+
+    public List<MTextileWearDto> getActiveTextileWears(String category) {
+        return textileWearRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromTextileWear()).collect(Collectors.toList());
+    }
+
+    //=========================================== Textile Wear Brand Service ======================================================
+
+    public List<MTextileWearBrandDto> getActiveTextileWearBrands(String category, String attireType) {
+        return textileWearBrandRepository.findByStatusAndCategoryIgnoreCaseAndAttireTypeIgnoreCase(true, category, attireType).stream().map(fromTextileWearBrand()).collect(Collectors.toList());
+    }
 
     //=========================================== District Converter Function ======================================================
 
@@ -232,4 +276,39 @@ public class MasterDataService {
         };
     }
 
+    //=========================================== Textile Wear Converter Function ======================================================
+
+    public Function<MTextileWear, MTextileWearDto> fromTextileWear() {
+        return new Function<MTextileWear, MTextileWearDto>() {
+            @Override
+            public MTextileWearDto apply(MTextileWear mTextileWear) {
+                return MTextileWearDto.builder()
+                        .id(mTextileWear.getId())
+                        .excelId(mTextileWear.getExcelId())
+                        .typeOfWear(mTextileWear.getTypeOfWear())
+                        .category(mTextileWear.getCategory())
+                        .attireType(mTextileWear.getAttireType())
+                        .status(mTextileWear.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Textile Wear Brand Converter Function ======================================================
+
+    public Function<MTextileWearBrand, MTextileWearBrandDto> fromTextileWearBrand() {
+        return new Function<MTextileWearBrand, MTextileWearBrandDto>() {
+            @Override
+            public MTextileWearBrandDto apply(MTextileWearBrand mTextileWearBrand) {
+                return MTextileWearBrandDto.builder()
+                        .id(mTextileWearBrand.getId())
+                        .excelId(mTextileWearBrand.getExcelId())
+                        .brandName(mTextileWearBrand.getBrandName())
+                        .category(mTextileWearBrand.getCategory())
+                        .attireType(mTextileWearBrand.getAttireType())
+                        .status(mTextileWearBrand.isStatus())
+                        .build();
+            }
+        };
+    }
 }

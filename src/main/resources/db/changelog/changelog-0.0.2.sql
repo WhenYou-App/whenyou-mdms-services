@@ -76,3 +76,29 @@ CREATE TABLE m_boutique_wear_brands (
     modified_date TIMESTAMP
 );
 
+-- Table: m_textiles
+CREATE TABLE m_textile_wears (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    excel_id BIGINT NOT NULL UNIQUE,
+    type_of_wear VARCHAR(150) NOT NULL,
+    category VARCHAR(150),
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP,
+    created_by UUID,
+    modified_by UUID,
+    modified_date TIMESTAMP
+);
+
+-- Table: m_textile_brands
+CREATE TABLE m_textile_wear_brands (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    excel_id BIGINT NOT NULL UNIQUE,
+    brand_name VARCHAR(150) NOT NULL,
+    category VARCHAR(150) NOT NULL,
+    status BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP,
+    created_by UUID,
+    modified_by UUID,
+    modified_date TIMESTAMP
+);
+
