@@ -1,14 +1,8 @@
 package com.whenyou.masterdata.service;
 
-import com.whenyou.masterdata.dto.MDistrictDto;
-import com.whenyou.masterdata.dto.MPincodeDto;
-import com.whenyou.masterdata.dto.MVehicleDto;
-import com.whenyou.masterdata.entity.MDistrict;
-import com.whenyou.masterdata.entity.MPincode;
-import com.whenyou.masterdata.entity.MVehicle;
-import com.whenyou.masterdata.repository.MDistrictRepository;
-import com.whenyou.masterdata.repository.MPincodeRepository;
-import com.whenyou.masterdata.repository.MVehicleRepository;
+import com.whenyou.masterdata.dto.*;
+import com.whenyou.masterdata.entity.*;
+import com.whenyou.masterdata.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +16,11 @@ public class MasterDataService {
     @Autowired MPincodeRepository mPincodeRepository;
     @Autowired MDistrictRepository mDistrictRepository;
     @Autowired MVehicleRepository mVehicleRepository;
+    @Autowired MJewelRepository jewelsRepository;
+    @Autowired MServeTypeRepository serveTypeRepository;
+    @Autowired MMakeOverRepository makeOverRepository;
+    @Autowired MBoutiqueWearRepository boutiqueWearRepository;
+    @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
 
     //=========================================== District Service ======================================================
 
@@ -65,6 +64,18 @@ public class MasterDataService {
             return mVehicleRepository.findByStatus(true).stream().map(fromVehicle()).collect(Collectors.toList());
         }
     }
+
+    //=========================================== Jewel Service ======================================================
+
+    //============================================ Jewel Material Service ======================================================
+
+    //=========================================== Catering Serve Type Service ======================================================
+
+    //=========================================== Make Over Service Service ======================================================
+
+    //=========================================== Boutique Wear Service ======================================================
+
+    //=========================================== Boutique Wear Brand Service ======================================================
 
     //=========================================== District Converter Function ======================================================
 
@@ -114,6 +125,108 @@ public class MasterDataService {
                         .modelType(mVehicle.getModelType())
                         .modelName(mVehicle.getModelName())
                         .status(mVehicle.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Jewel Converter Function ======================================================
+
+    public Function<MJewel, MJewelDto> fromJewel() {
+        return new Function<MJewel, MJewelDto>() {
+            @Override
+            public MJewelDto apply(MJewel mJewel) {
+                return MJewelDto.builder()
+                        .id(mJewel.getId())
+                        .excelId(mJewel.getExcelId())
+                        .productType(mJewel.getProductType())
+                        .status(mJewel.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Jewel Material Converter Function ======================================================
+
+    public Function<MJewelMaterial, MJewelMaterialDto> fromJewelMaterial() {
+        return new Function<MJewelMaterial, MJewelMaterialDto>() {
+            @Override
+            public MJewelMaterialDto apply(MJewelMaterial mJewelMaterial) {
+                return MJewelMaterialDto.builder()
+                        .id(mJewelMaterial.getId())
+                        .excelId(mJewelMaterial.getExcelId())
+                        .material(mJewelMaterial.getMaterial())
+                        .purity(mJewelMaterial.getPurity())
+                        .status(mJewelMaterial.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Catering Serve Type Converter Function ======================================================
+
+    public Function<MServeType, MServeTypeDto> fromServeType() {
+        return new Function<MServeType, MServeTypeDto>() {
+            @Override
+            public MServeTypeDto apply(MServeType mServeType) {
+                return MServeTypeDto.builder()
+                        .id(mServeType.getId())
+                        .excelId(mServeType.getExcelId())
+                        .serveType(mServeType.getServeType())
+                        .status(mServeType.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Make Over Service Converter Function ======================================================
+
+    public Function<MMakeOver, MMakeOverDto> fromMakeOver() {
+        return new Function<MMakeOver, MMakeOverDto>() {
+            @Override
+            public MMakeOverDto apply(MMakeOver mMakeOver) {
+                return MMakeOverDto.builder()
+                        .id(mMakeOver.getId())
+                        .excelId(mMakeOver.getExcelId())
+                        .packageName(mMakeOver.getPackageName())
+                        .category(mMakeOver.getCategory())
+                        .status(mMakeOver.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Boutique Wear Converter Function ======================================================
+
+    public Function<MBoutiqueWear, MBoutiqueWearDto> fromBoutiqueWear() {
+        return new Function<MBoutiqueWear, MBoutiqueWearDto>() {
+            @Override
+            public MBoutiqueWearDto apply(MBoutiqueWear mBoutiqueWear) {
+                return MBoutiqueWearDto.builder()
+                        .id(mBoutiqueWear.getId())
+                        .excelId(mBoutiqueWear.getExcelId())
+                        .typeOfWear(mBoutiqueWear.getTypeOfWear())
+                        .category(mBoutiqueWear.getCategory())
+                        .attireType(mBoutiqueWear.getAttireType())
+                        .status(mBoutiqueWear.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Boutique Wear Brand Converter Function ======================================================
+
+    public Function<MBoutiqueWearBrand, MBoutiqueWearBrandDto> fromBoutiqueWearBrand() {
+        return new Function<MBoutiqueWearBrand, MBoutiqueWearBrandDto>() {
+            @Override
+            public MBoutiqueWearBrandDto apply(MBoutiqueWearBrand mBoutiqueWearBrand) {
+                return MBoutiqueWearBrandDto.builder()
+                        .id(mBoutiqueWearBrand.getId())
+                        .excelId(mBoutiqueWearBrand.getExcelId())
+                        .brandName(mBoutiqueWearBrand.getBrandName())
+                        .category(mBoutiqueWearBrand.getCategory())
+                        .attireType(mBoutiqueWearBrand.getAttireType())
+                        .status(mBoutiqueWearBrand.isStatus())
                         .build();
             }
         };

@@ -165,14 +165,39 @@ public class ExcelUtility {
                     jewel.setExcelId(Long.parseLong(idStr));
                 }
                 jewel.setProductType(getCellValueAsString(row.getCell(1)));
-                jewel.setMaterial(getCellValueAsString(row.getCell(2)));
-                jewel.setPurity(getCellValueAsString(row.getCell(3)));
-                jewel.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
+                jewel.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(2))));
 
                 jewels.add(jewel);
             }
         }
         return jewels;
+    }
+
+    public static List<MJewelMaterial> excelToJewelMaterials(InputStream is) throws IOException {
+        List<MJewelMaterial> jewelMaterials = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue; // Skip header
+                if (isRowEmpty(row)) continue;
+
+                MJewelMaterial jewelMaterial = new MJewelMaterial();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    jewelMaterial.setExcelId(Long.parseLong(idStr));
+                }
+                jewelMaterial.setMaterial(getCellValueAsString(row.getCell(1)));
+                jewelMaterial.setPurity(getCellValueAsString(row.getCell(2)));
+                jewelMaterial.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+
+                jewelMaterials.add(jewelMaterial);
+            }
+        }
+        return jewelMaterials;
     }
 
     public static List<MServeType> excelToServeTypes(InputStream is) throws IOException {

@@ -13,18 +13,19 @@ import java.util.List;
 
 @Service
 public class InitService {
-    @Autowired MDistrictRepository districtRepository;
+    @Autowired MJewelRepository jewelsRepository;
     @Autowired MPincodeRepository pincodeRepository;
     @Autowired MVehicleRepository vehicleRepository;
-    @Autowired MJewelRepository jewelsRepository;
-    @Autowired MServeTypeRepository serveTypeRepository;
     @Autowired MMakeOverRepository makeOverRepository;
+    @Autowired MDistrictRepository districtRepository;
+    @Autowired MServeTypeRepository serveTypeRepository;
     @Autowired MBoutiqueWearRepository boutiqueWearRepository;
+    @Autowired MJewelMaterialRepository jewelMaterialRepository;
     @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
 
     @Transactional
     public void initData(MultipartFile districtsFile, MultipartFile pincodesFile, MultipartFile vehiclesFile,
-                         MultipartFile jewelsFile, MultipartFile serveTypesFile, MultipartFile makeOversFile,
+                         MultipartFile jewelsFile, MultipartFile jewelMaterialsFile, MultipartFile serveTypesFile, MultipartFile makeOversFile,
                          MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile) throws IOException {
         // Process Districts if file is present and not empty
         if (districtsFile != null && !districtsFile.isEmpty()) {
@@ -81,6 +82,7 @@ public class InitService {
                         });
             }
         }
+
         // Process Jewels
         if (jewelsFile != null && !jewelsFile.isEmpty()) {
             List<MJewel> jewels = ExcelUtility.excelToJewels(jewelsFile.getInputStream());
@@ -88,13 +90,28 @@ public class InitService {
                 jewelsRepository.findByExcelId(jewel.getExcelId())
                         .ifPresentOrElse(existing -> {
                             existing.setProductType(jewel.getProductType());
-                            existing.setMaterial(jewel.getMaterial());
-                            existing.setPurity(jewel.getPurity());
                             existing.setStatus(jewel.isStatus());
                             jewelsRepository.save(existing);
                         }, () -> {
                             jewel.setId(null);
                             jewelsRepository.save(jewel);
+                        });
+            }
+        }
+
+        // Process Jewel Materials
+        if (jewelMaterialsFile != null && !jewelMaterialsFile.isEmpty()) {
+            List<MJewelMaterial> jewelMaterials = ExcelUtility.excelToJewelMaterials(jewelMaterialsFile.getInputStream());
+            for (MJewelMaterial jewelMaterial : jewelMaterials) {
+                jewelMaterialRepository.findByExcelId(jewelMaterial.getExcelId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setMaterial(jewelMaterial.getMaterial());
+                            existing.setPurity(jewelMaterial.getPurity());
+                            existing.setStatus(jewelMaterial.isStatus());
+                            jewelMaterialRepository.save(existing);
+                        }, () -> {
+                            jewelMaterial.setId(null);
+                            jewelMaterialRepository.save(jewelMaterial);
                         });
             }
         }

@@ -12,8 +12,8 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "m_jewels")
-public class MJewel extends Auditor {
+@Table(name = "m_jewel_materials")
+public class MJewelMaterial extends Auditor {
     @Id
     @GeneratedValue
     private UUID id;
@@ -22,7 +22,10 @@ public class MJewel extends Auditor {
     private Long excelId;
 
     @Column
-    private String productType;
+    private String material;
+
+    @Column
+    private String purity;
 
     @Column
     private boolean status;
