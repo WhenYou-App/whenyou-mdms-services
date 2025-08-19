@@ -309,4 +309,59 @@ public class ExcelUtility {
         return brands;
     }
 
+    public static List<MTextileWear> excelToTextileWears(InputStream is) throws IOException {
+        List<MTextileWear> textileWears = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MTextileWear wear = new MTextileWear();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    wear.setExcelId(Long.parseLong(idStr));
+                }
+                wear.setCategory(getCellValueAsString(row.getCell(1)));
+                wear.setTypeOfWear(getCellValueAsString(row.getCell(2)));
+                wear.setAttireType(getCellValueAsString(row.getCell(3)));
+                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
+
+                textileWears.add(wear);
+            }
+        }
+        return textileWears;
+    }
+
+    public static List<MTextileWearBrand> excelToTextileWearBrands(InputStream is) throws IOException {
+        List<MTextileWearBrand> brands = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MTextileWearBrand brand = new MTextileWearBrand();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    brand.setExcelId(Long.parseLong(idStr));
+                }
+                brand.setCategory(getCellValueAsString(row.getCell(1)));
+                brand.setBrandName(getCellValueAsString(row.getCell(2)));
+                brand.setAttireType(getCellValueAsString(row.getCell(3)));
+                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
+
+                brands.add(brand);
+            }
+        }
+        return brands;
+    }
 }

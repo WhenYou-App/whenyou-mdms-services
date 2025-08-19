@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface MTextileWearRepository extends JpaRepository<MTextileWear, UUID> {
     public List<MTextileWear> findByStatusAndCategoryIgnoreCase(boolean status, String category);
+
+    public Optional<MTextileWear> findByExcelId(Long excelId);
 }

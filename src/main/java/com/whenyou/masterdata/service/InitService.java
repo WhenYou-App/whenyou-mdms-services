@@ -19,14 +19,16 @@ public class InitService {
     @Autowired MMakeOverRepository makeOverRepository;
     @Autowired MDistrictRepository districtRepository;
     @Autowired MServeTypeRepository serveTypeRepository;
+    @Autowired MTextileWearRepository textileWearRepository;
     @Autowired MBoutiqueWearRepository boutiqueWearRepository;
     @Autowired MJewelMaterialRepository jewelMaterialRepository;
+    @Autowired MTextileWearBrandRepository textileWearBrandRepository;
     @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
 
     @Transactional
     public void initData(MultipartFile districtsFile, MultipartFile pincodesFile, MultipartFile vehiclesFile,
                          MultipartFile jewelsFile, MultipartFile jewelMaterialsFile, MultipartFile serveTypesFile, MultipartFile makeOversFile,
-                         MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile) throws IOException {
+                         MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile, MultipartFile textileWearsFile, MultipartFile textileWearBrandsFile) throws IOException {
         // Process Districts if file is present and not empty
         if (districtsFile != null && !districtsFile.isEmpty()) {
             List<MDistrict> districts = ExcelUtility.excelToDistricts(districtsFile.getInputStream());
@@ -181,6 +183,42 @@ public class InitService {
                         }, () -> {
                             brand.setId(null);
                             boutiqueWearBrandRepository.save(brand);
+                        });
+            }
+        }
+
+        // Process Textile Wears
+        if (textileWearsFile != null && !textileWearsFile.isEmpty()) {
+            List<MTextileWear> textileWears = ExcelUtility.excelToTextileWears(textileWearsFile.getInputStream());
+            for (MTextileWear textileWear : textileWears) {
+                textileWearRepository.findByExcelId(textileWear.getExcelId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setTypeOfWear(textileWear.getTypeOfWear());
+                            existing.setCategory(textileWear.getCategory());
+                            existing.setAttireType(textileWear.getAttireType());
+                            existing.setStatus(textileWear.isStatus());
+                            textileWearRepository.save(existing);
+                        }, () -> {
+                            textileWear.setId(null);
+                            textileWearRepository.save(textileWear);
+                        });
+            }
+        }
+
+        // Process Textile Wear Brands
+        if (textileWearBrandsFile != null && !textileWearBrandsFile.isEmpty()) {
+            List<MTextileWearBrand> brands = ExcelUtility.excelToTextileWearBrands(textileWearBrandsFile.getInputStream());
+            for (MTextileWearBrand brand : brands) {
+                textileWearBrandRepository.findByExcelId(brand.getExcelId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setBrandName(brand.getBrandName());
+                            existing.setCategory(brand.getCategory());
+                            existing.setAttireType(brand.getAttireType());
+                            existing.setStatus(brand.isStatus());
+                            textileWearBrandRepository.save(existing);
+                        }, () -> {
+                            brand.setId(null);
+                            textileWearBrandRepository.save(brand);
                         });
             }
         }

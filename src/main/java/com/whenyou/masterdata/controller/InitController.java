@@ -27,9 +27,11 @@ public class InitController {
                                             @RequestParam(value = "serveTypesFile", required = false) MultipartFile serveTypesFile,
                                             @RequestParam(value = "makeOversFile", required = false) MultipartFile makeOversFile,
                                             @RequestParam(value = "boutiqueWearsFile", required = false) MultipartFile boutiqueWearsFile,
-                                            @RequestParam(value = "boutiqueWearBrandsFile", required = false) MultipartFile boutiqueWearBrandsFile) {
+                                            @RequestParam(value = "boutiqueWearBrandsFile", required = false) MultipartFile boutiqueWearBrandsFile,
+                                            @RequestParam(value = "textileWearsFile", required = false) MultipartFile textileWearsFile,
+                                            @RequestParam(value = "textileWearBrandsFile", required = false) MultipartFile textileWearBrandsFile) {
         try {
-            initService.initData(districtsFile, pincodesFile, vehiclesFile, jewelsFile, jewelMaterialsFile, serveTypesFile, makeOversFile, boutiqueWearsFile, boutiqueWearBrandsFile);
+            initService.initData(districtsFile, pincodesFile, vehiclesFile, jewelsFile, jewelMaterialsFile, serveTypesFile, makeOversFile, boutiqueWearsFile, boutiqueWearBrandsFile, textileWearsFile, textileWearBrandsFile);
             return ResponseEntity.ok(Message.builder().status(true).message("Initialization completed successfully!").build());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.builder().status(false).message("Error processing files: " + e.getMessage()).build());
