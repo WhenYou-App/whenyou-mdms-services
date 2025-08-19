@@ -18,7 +18,7 @@ import java.io.IOException;
 public class InitController {
     @Autowired InitService initService;
 
-    @PostMapping("master-data")
+    @PostMapping("/data")
     public ResponseEntity<Message> initData(@RequestParam(value = "districtsFile", required = false) MultipartFile districtsFile,
                                             @RequestParam(value = "pincodesFile", required = false) MultipartFile pincodesFile,
                                             @RequestParam(value = "vehiclesFile", required = false) MultipartFile vehiclesFile,
