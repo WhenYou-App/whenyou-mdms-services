@@ -47,7 +47,7 @@ spring:
 
   security:
     jwt:
-      secret: IwXWuCZRv/a7SXuV/GIZvO/zELE00N5jYoXXoF3Y4ZPl+A62V4nwthL13vCzQiJ17DzWYkroiAonYbRX9fHHwA==
+      secret: 69lHwuwb6501cRvtHBhBzX4WDi4NPCh/STDXMO/xW59uDbd6OS/7nxzCIDlgid+aDRTteMX11ExJQ6pUQ0UVBA==
       expiration: 86400000
       header: Authorization
       prefix: Bearer
