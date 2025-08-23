@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MDistrictDto {
     private UUID id;
-    private Long excelId;
+    private Long districtId;
     private String name;
     private String nameInLocal;
     private boolean status;

@@ -3,16 +3,17 @@ package in.com.whenyou.masterdata.dto;
 import lombok.*;
 
 import java.util.UUID;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MVehicleDto {
+public class MMakeOverCategoryDto {
     private UUID id;
-    private Long excelId;
-    private String brandName;
-    private String modelType;
-    private String modelName;
+    private Long categoryId;
+    private String categoryName;
+    private String nameInLocal;
     private boolean status;
 }
+

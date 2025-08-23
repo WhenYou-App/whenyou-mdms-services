@@ -12,26 +12,20 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "m_pincodes")
-public class MPincode {
+@Table(name = "m_textile_wear_categories")
+public class MTextileWearCategory {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long pincodeId;
+    private Long categoryId;
 
     @Column
-    private Long districtId;
-
-    @Column
-    private String name;
+    private String categoryName;
 
     @Column
     private String nameInLocal;
-
-    @Column
-    private String pincode;
 
     @Column
     private boolean status;

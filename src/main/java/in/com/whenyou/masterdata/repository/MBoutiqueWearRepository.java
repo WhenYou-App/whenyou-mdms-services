@@ -9,8 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface MBoutiqueWearRepository extends JpaRepository<MBoutiqueWear, UUID> {
-    public Optional<MBoutiqueWear> findByExcelId(Long excelId);
+    public Optional<MBoutiqueWear> findByBoutiqueWearId(Long excelId);
 
-    public List<MBoutiqueWear> findByStatusAndCategoryIgnoreCase(boolean status, String category);
-
+    public List<MBoutiqueWear> findByStatusAndCategoryId(boolean status, Long categoryId);
 }

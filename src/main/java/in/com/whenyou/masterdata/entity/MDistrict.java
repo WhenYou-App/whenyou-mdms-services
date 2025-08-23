@@ -13,13 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "m_districts")
-public class MDistrict extends Auditor {
+public class MDistrict {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long excelId;
+    private Long districtId;
 
     @Column
     private String name;

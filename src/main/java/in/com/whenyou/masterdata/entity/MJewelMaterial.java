@@ -13,19 +13,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "m_jewel_materials")
-public class MJewelMaterial extends Auditor {
+public class MJewelMaterial {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long excelId;
+    private Long jewelMaterialId;
 
     @Column
-    private String material;
+    private String materialName;
 
     @Column
-    private String purity;
+    private String nameInLocal;
 
     @Column
     private boolean status;

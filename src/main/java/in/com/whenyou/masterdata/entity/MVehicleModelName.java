@@ -12,17 +12,26 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "m_jewels")
-public class MJewel extends Auditor {
+@Table(name = "m_vehicle_model_names")
+public class MVehicleModelName {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long excelId;
+    private Long modelNameId;
 
     @Column
-    private String productType;
+    private Long modelTypeId;
+
+    @Column
+    private Long brandId;
+
+    @Column
+    private String modelName;
+
+    @Column
+    private String nameInLocal;
 
     @Column
     private boolean status;

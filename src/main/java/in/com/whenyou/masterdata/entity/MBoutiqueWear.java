@@ -13,22 +13,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "m_boutique_wears")
-public class MBoutiqueWear extends Auditor {
+public class MBoutiqueWear {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long excelId;
+    private Long boutiqueWearId;
+
+    @Column
+    private Long categoryId;
 
     @Column
     private String typeOfWear;
 
     @Column
-    private String category;
-
-    @Column
-    private String attireType;
+    private String nameInLocal;
 
     @Column
     private boolean status;

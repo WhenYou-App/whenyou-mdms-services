@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface MServeTypeRepository extends JpaRepository<MServeType, UUID> {
-    public Optional<MServeType> findByExcelId(Long excelId);
+    public Optional<MServeType> findByServeTypeId(Long excelId);
 
     public List<MServeType> findByStatus(boolean status);
 }

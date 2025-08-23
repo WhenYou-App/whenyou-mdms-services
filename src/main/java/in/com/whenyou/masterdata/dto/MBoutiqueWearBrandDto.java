@@ -1,6 +1,5 @@
 package in.com.whenyou.masterdata.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.util.UUID;
@@ -12,9 +11,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MBoutiqueWearBrandDto {
     private UUID id;
-    private Long excelId;
+    private Long boutiqueWearBrandId;
+    private Long categoryId;
     private String brandName;
-    private String category;
-    private String attireType;
+    private String nameInLocal;
     private boolean status;
 }

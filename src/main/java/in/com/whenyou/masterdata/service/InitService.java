@@ -1,9 +1,7 @@
 package in.com.whenyou.masterdata.service;
 
 import in.com.whenyou.masterdata.entity.*;
-import in.com.whenyou.masterdata.entity.*;
 import in.com.whenyou.masterdata.excelutil.ExcelUtility;
-import in.com.whenyou.masterdata.repository.*;
 import in.com.whenyou.masterdata.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,41 +13,47 @@ import java.util.List;
 
 @Service
 public class InitService {
-    @Autowired
-    MJewelRepository jewelsRepository;
-    @Autowired
-    MPincodeRepository pincodeRepository;
-    @Autowired
-    MVehicleRepository vehicleRepository;
-    @Autowired MMakeOverRepository makeOverRepository;
-    @Autowired
-    MDistrictRepository districtRepository;
-    @Autowired
-    MServeTypeRepository serveTypeRepository;
-    @Autowired MTextileWearRepository textileWearRepository;
-    @Autowired MBoutiqueWearRepository boutiqueWearRepository;
-    @Autowired MJewelMaterialRepository jewelMaterialRepository;
-    @Autowired MTextileWearBrandRepository textileWearBrandRepository;
-    @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
+    @Autowired MPincodeRepository mPincodeRepository;
+    @Autowired MDistrictRepository mDistrictRepository;
+    @Autowired MServeTypeRepository mServeTypeRepository;
+    @Autowired MTextileWearRepository mTextileWearRepository;
+    @Autowired MMakeOverPackageRepository mMakeOverRepository;
+    @Autowired MBoutiqueWearRepository mBoutiqueWearRepository;
+    @Autowired MVehicleBrandRepository mVehicleBrandRepository;
+    @Autowired MJewelMaterialRepository mJewelMaterialRepository;
+    @Autowired MTextileWearBrandRepository mTextileWearBrandRepository;
+    @Autowired MJewelProductTypeRepository mJewelProductTypeRepository;
+    @Autowired MMakeOverCategoryRepository mMakeOverCategoryRepository;
+    @Autowired MVehicleModelTypeRepository mVehicleModelTypeRepository;
+    @Autowired MVehicleModelNameRepository mVehicleModelNameRepository;
+    @Autowired MBoutiqueWearBrandRepository mBoutiqueWearBrandRepository;
+    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
+    @Autowired MJewelMaterialPurityRepository mJewelMaterialPurityRepository;
+    @Autowired MTextileWearCategoryRepository mTextileWearCategoryRepository;
 
     @Transactional
-    public void initData(MultipartFile districtsFile, MultipartFile pincodesFile, MultipartFile vehiclesFile,
-                         MultipartFile jewelsFile, MultipartFile jewelMaterialsFile, MultipartFile serveTypesFile, MultipartFile makeOversFile,
-                         MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile, MultipartFile textileWearsFile, MultipartFile textileWearBrandsFile) throws IOException {
+    public void initData(MultipartFile districtsFile, MultipartFile pincodesFile,
+                         MultipartFile vehicleBrandsFile, MultipartFile vehicleModelTypesFile, MultipartFile vehicleModelNamesFile,
+                         MultipartFile jewelsFile, MultipartFile jewelMaterialsFile, MultipartFile jewelMaterialPuritiesFile,
+                         MultipartFile serveTypesFile,
+                         MultipartFile makeOverCategoriesFile, MultipartFile makeOverPackagesFile,
+                         MultipartFile boutiqueWearCategoriesFile, MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile,
+                         MultipartFile textileWearCategoriesFile, MultipartFile textileWearsFile, MultipartFile textileWearBrandsFile) throws IOException {
+
         // Process Districts if file is present and not empty
         if (districtsFile != null && !districtsFile.isEmpty()) {
             List<MDistrict> districts = ExcelUtility.excelToDistricts(districtsFile.getInputStream());
             for (MDistrict district : districts) {
-                districtRepository.findByExcelId(district.getExcelId())
+                mDistrictRepository.findByDistrictId(district.getDistrictId())
                         .ifPresentOrElse(existing -> {
                             existing.setName(district.getName());
                             existing.setNameInLocal(district.getNameInLocal());
                             existing.setStatus(district.isStatus());
-                            districtRepository.save(existing);
+                            mDistrictRepository.save(existing);
                         }, () -> {
                             // New district entry
                             district.setId(null); // Let UUID be auto-generated
-                            districtRepository.save(district);
+                            mDistrictRepository.save(district);
                         });
             }
         }
@@ -58,52 +62,88 @@ public class InitService {
         if (pincodesFile != null && !pincodesFile.isEmpty()) {
             List<MPincode> pincodes = ExcelUtility.excelToPincodes(pincodesFile.getInputStream());
             for (MPincode pincode : pincodes) {
-                pincodeRepository.findByExcelId(pincode.getExcelId())
+                mPincodeRepository.findByPincodeId(pincode.getPincodeId())
                         .ifPresentOrElse(existing -> {
+                            existing.setDistrictId(pincode.getDistrictId());
                             existing.setName(pincode.getName());
                             existing.setNameInLocal(pincode.getNameInLocal());
                             existing.setPincode(pincode.getPincode());
                             existing.setStatus(pincode.isStatus());
-                            pincodeRepository.save(existing);
+                            mPincodeRepository.save(existing);
                         }, () -> {
                             // New pincode entry
                             pincode.setId(null); // Let UUID be auto-generated
-                            pincodeRepository.save(pincode);
+                            mPincodeRepository.save(pincode);
                         });
             }
         }
 
         // Process Vehicle if file is present and not empty
-        if (vehiclesFile != null && !vehiclesFile.isEmpty()) {
-            List<MVehicle> vehicles = ExcelUtility.excelToVehicles(vehiclesFile.getInputStream());
-            for (MVehicle vehicle : vehicles) {
-                vehicleRepository.findByExcelId(vehicle.getExcelId())
+        if (vehicleBrandsFile != null && !vehicleBrandsFile.isEmpty()) {
+            List<MVehicleBrand> vehicles = ExcelUtility.excelToVehicleBrands(vehicleBrandsFile.getInputStream());
+            for (MVehicleBrand vehicle : vehicles) {
+                mVehicleBrandRepository.findByBrandId(vehicle.getBrandId())
                         .ifPresentOrElse(existing -> {
                             existing.setBrandName(vehicle.getBrandName());
-                            existing.setModelName(vehicle.getModelName());
-                            existing.setModelType(vehicle.getModelType());
+                            existing.setNameInLocal(vehicle.getNameInLocal());
                             existing.setStatus(vehicle.isStatus());
-                            vehicleRepository.save(existing);
+                            mVehicleBrandRepository.save(existing);
                         }, () -> {
-                            // New pincode entry
-                            vehicle.setId(null); // Let UUID be auto-generated
-                            vehicleRepository.save(vehicle);
+                            vehicle.setId(null);
+                            mVehicleBrandRepository.save(vehicle);
+                        });
+            }
+        }
+
+        // Process Vehicle Model Type if file is present and not empty
+        if (vehicleModelTypesFile != null && !vehicleModelTypesFile.isEmpty()) {
+            List<MVehicleModelType> modelTypes = ExcelUtility.excelToVehicleModelTypes(vehicleModelTypesFile.getInputStream());
+            for (MVehicleModelType modelType : modelTypes) {
+                mVehicleModelTypeRepository.findByModelTypeId(modelType.getModelTypeId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setModelTypeName(modelType.getModelTypeName());
+                            existing.setNameInLocal(modelType.getNameInLocal());
+                            existing.setStatus(modelType.isStatus());
+                            mVehicleModelTypeRepository.save(existing);
+                        }, () -> {
+                            modelType.setId(null);
+                            mVehicleModelTypeRepository.save(modelType);
+                        });
+            }
+        }
+
+        // Process Vehicle Model Name if file is present and not empty
+        if (vehicleModelNamesFile != null && !vehicleModelNamesFile.isEmpty()) {
+            List<MVehicleModelName> modelNames = ExcelUtility.excelToVehicleModelNames(vehicleModelNamesFile.getInputStream());
+            for (MVehicleModelName modelName : modelNames) {
+                mVehicleModelNameRepository.findByModelNameId(modelName.getBrandId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setBrandId(modelName.getBrandId());
+                            existing.setModelTypeId(modelName.getModelTypeId());
+                            existing.setModelName(modelName.getModelName());
+                            existing.setNameInLocal(modelName.getNameInLocal());
+                            existing.setStatus(modelName.isStatus());
+                            mVehicleModelNameRepository.save(existing);
+                        }, () -> {
+                            modelName.setId(null);
+                            mVehicleModelNameRepository.save(modelName);
                         });
             }
         }
 
         // Process Jewels
         if (jewelsFile != null && !jewelsFile.isEmpty()) {
-            List<MJewel> jewels = ExcelUtility.excelToJewels(jewelsFile.getInputStream());
-            for (MJewel jewel : jewels) {
-                jewelsRepository.findByExcelId(jewel.getExcelId())
+            List<MJewelProductType> jewels = ExcelUtility.excelToJewels(jewelsFile.getInputStream());
+            for (MJewelProductType jewel : jewels) {
+                mJewelProductTypeRepository.findByJewelProductTypeId(jewel.getJewelProductTypeId())
                         .ifPresentOrElse(existing -> {
-                            existing.setProductType(jewel.getProductType());
+                            existing.setProductTypeName(jewel.getProductTypeName());
+                            existing.setNameInLocal(jewel.getNameInLocal());
                             existing.setStatus(jewel.isStatus());
-                            jewelsRepository.save(existing);
+                            mJewelProductTypeRepository.save(existing);
                         }, () -> {
                             jewel.setId(null);
-                            jewelsRepository.save(jewel);
+                            mJewelProductTypeRepository.save(jewel);
                         });
             }
         }
@@ -112,15 +152,32 @@ public class InitService {
         if (jewelMaterialsFile != null && !jewelMaterialsFile.isEmpty()) {
             List<MJewelMaterial> jewelMaterials = ExcelUtility.excelToJewelMaterials(jewelMaterialsFile.getInputStream());
             for (MJewelMaterial jewelMaterial : jewelMaterials) {
-                jewelMaterialRepository.findByExcelId(jewelMaterial.getExcelId())
+                mJewelMaterialRepository.findByJewelMaterialId(jewelMaterial.getJewelMaterialId())
                         .ifPresentOrElse(existing -> {
-                            existing.setMaterial(jewelMaterial.getMaterial());
-                            existing.setPurity(jewelMaterial.getPurity());
+                            existing.setMaterialName(jewelMaterial.getMaterialName());
+                            existing.setNameInLocal(jewelMaterial.getNameInLocal());
                             existing.setStatus(jewelMaterial.isStatus());
-                            jewelMaterialRepository.save(existing);
+                            mJewelMaterialRepository.save(existing);
                         }, () -> {
                             jewelMaterial.setId(null);
-                            jewelMaterialRepository.save(jewelMaterial);
+                            mJewelMaterialRepository.save(jewelMaterial);
+                        });
+            }
+        }
+
+        // Process Jewel Material purities
+        if (jewelMaterialPuritiesFile != null && !jewelMaterialPuritiesFile.isEmpty()) {
+            List<MJewelMaterialPurity> jewelMaterialPurities = ExcelUtility.excelToJewelMaterialPurities(jewelMaterialPuritiesFile.getInputStream());
+            for (MJewelMaterialPurity jewelMaterialPurity : jewelMaterialPurities) {
+                mJewelMaterialPurityRepository.findByJewelMaterialPurityId(jewelMaterialPurity.getJewelMaterialPurityId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setJewelMaterialId(jewelMaterialPurity.getJewelMaterialId());
+                            existing.setMaterialPurity(jewelMaterialPurity.getMaterialPurity());
+                            existing.setStatus(jewelMaterialPurity.isStatus());
+                            mJewelMaterialPurityRepository.save(existing);
+                        }, () -> {
+                            jewelMaterialPurity.setId(null);
+                            mJewelMaterialPurityRepository.save(jewelMaterialPurity);
                         });
             }
         }
@@ -129,31 +186,67 @@ public class InitService {
         if (serveTypesFile != null && !serveTypesFile.isEmpty()) {
             List<MServeType> serveTypes = ExcelUtility.excelToServeTypes(serveTypesFile.getInputStream());
             for (MServeType serveType : serveTypes) {
-                serveTypeRepository.findByExcelId(serveType.getExcelId())
+                mServeTypeRepository.findByServeTypeId(serveType.getServeTypeId())
                         .ifPresentOrElse(existing -> {
                             existing.setServeType(serveType.getServeType());
+                            existing.setNameInLocal(serveType.getNameInLocal());
                             existing.setStatus(serveType.isStatus());
-                            serveTypeRepository.save(existing);
+                            mServeTypeRepository.save(existing);
                         }, () -> {
                             serveType.setId(null);
-                            serveTypeRepository.save(serveType);
+                            mServeTypeRepository.save(serveType);
                         });
             }
         }
 
-        // Process Make Overs
-        if (makeOversFile != null && !makeOversFile.isEmpty()) {
-            List<MMakeOver> makeOvers = ExcelUtility.excelToMakeOvers(makeOversFile.getInputStream());
-            for (MMakeOver makeOver : makeOvers) {
-                makeOverRepository.findByExcelId(makeOver.getExcelId())
+        // Process Make Over Categories
+        if (makeOverCategoriesFile != null && !makeOverCategoriesFile.isEmpty()) {
+            List<MMakeOverCategory> makeOverCategories = ExcelUtility.excelToMakeOverCategories(makeOverCategoriesFile.getInputStream());
+            for (MMakeOverCategory makeOver : makeOverCategories) {
+                mMakeOverCategoryRepository.findByCategoryId(makeOver.getCategoryId())
                         .ifPresentOrElse(existing -> {
-                            existing.setPackageName(makeOver.getPackageName());
-                            existing.setCategory(makeOver.getCategory());
+                            existing.setCategoryName(makeOver.getCategoryName());
+                            existing.setNameInLocal(makeOver.getNameInLocal());
                             existing.setStatus(makeOver.isStatus());
-                            makeOverRepository.save(existing);
+                            mMakeOverCategoryRepository.save(existing);
                         }, () -> {
                             makeOver.setId(null);
-                            makeOverRepository.save(makeOver);
+                            mMakeOverCategoryRepository.save(makeOver);
+                        });
+            }
+        }
+
+        // Process Make Over Packages
+        if (makeOverPackagesFile != null && !makeOverPackagesFile.isEmpty()) {
+            List<MMakeOverPackage> makeOverPackages = ExcelUtility.excelToMakeOvers(makeOverPackagesFile.getInputStream());
+            for (MMakeOverPackage makeOverPackage : makeOverPackages) {
+                mMakeOverRepository.findByPackageId(makeOverPackage.getPackageId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setCategoryId(makeOverPackage.getCategoryId());
+                            existing.setPackageName(makeOverPackage.getPackageName());
+                            existing.setNameInLocal(makeOverPackage.getNameInLocal());
+                            existing.setStatus(makeOverPackage.isStatus());
+                            mMakeOverRepository.save(existing);
+                        }, () -> {
+                            makeOverPackage.setId(null);
+                            mMakeOverRepository.save(makeOverPackage);
+                        });
+            }
+        }
+
+        // Process Boutique Wear Categories
+        if (boutiqueWearCategoriesFile != null && !boutiqueWearCategoriesFile.isEmpty()) {
+            List<MBoutiqueWearCategory> boutiqueWearCategories = ExcelUtility.excelToBoutiqueWearCategories(boutiqueWearCategoriesFile.getInputStream());
+            for (MBoutiqueWearCategory category : boutiqueWearCategories) {
+                mBoutiqueWearCategoryRepository.findByCategoryId(category.getCategoryId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setCategoryName(category.getCategoryName());
+                            existing.setNameInLocal(category.getNameInLocal());
+                            existing.setStatus(category.isStatus());
+                            mBoutiqueWearCategoryRepository.save(existing);
+                        }, () -> {
+                            category.setId(null);
+                            mBoutiqueWearCategoryRepository.save(category);
                         });
             }
         }
@@ -162,16 +255,16 @@ public class InitService {
         if (boutiqueWearsFile != null && !boutiqueWearsFile.isEmpty()) {
             List<MBoutiqueWear> boutiqueWears = ExcelUtility.excelToBoutiqueWears(boutiqueWearsFile.getInputStream());
             for (MBoutiqueWear boutiqueWear : boutiqueWears) {
-                boutiqueWearRepository.findByExcelId(boutiqueWear.getExcelId())
+                mBoutiqueWearRepository.findByBoutiqueWearId(boutiqueWear.getBoutiqueWearId())
                         .ifPresentOrElse(existing -> {
+                            existing.setCategoryId(boutiqueWear.getCategoryId());
                             existing.setTypeOfWear(boutiqueWear.getTypeOfWear());
-                            existing.setCategory(boutiqueWear.getCategory());
-                            existing.setAttireType(boutiqueWear.getAttireType());
+                            existing.setNameInLocal(boutiqueWear.getNameInLocal());
                             existing.setStatus(boutiqueWear.isStatus());
-                            boutiqueWearRepository.save(existing);
+                            mBoutiqueWearRepository.save(existing);
                         }, () -> {
                             boutiqueWear.setId(null);
-                            boutiqueWearRepository.save(boutiqueWear);
+                            mBoutiqueWearRepository.save(boutiqueWear);
                         });
             }
         }
@@ -180,16 +273,33 @@ public class InitService {
         if (boutiqueWearBrandsFile != null && !boutiqueWearBrandsFile.isEmpty()) {
             List<MBoutiqueWearBrand> brands = ExcelUtility.excelToBoutiqueWearBrands(boutiqueWearBrandsFile.getInputStream());
             for (MBoutiqueWearBrand brand : brands) {
-                boutiqueWearBrandRepository.findByExcelId(brand.getExcelId())
+                mBoutiqueWearBrandRepository.findByBoutiqueWearBrandId(brand.getBoutiqueWearBrandId())
                         .ifPresentOrElse(existing -> {
+                            existing.setCategoryId(brand.getCategoryId());
                             existing.setBrandName(brand.getBrandName());
-                            existing.setCategory(brand.getCategory());
-                            existing.setAttireType(brand.getAttireType());
+                            existing.setNameInLocal(brand.getNameInLocal());
                             existing.setStatus(brand.isStatus());
-                            boutiqueWearBrandRepository.save(existing);
+                            mBoutiqueWearBrandRepository.save(existing);
                         }, () -> {
                             brand.setId(null);
-                            boutiqueWearBrandRepository.save(brand);
+                            mBoutiqueWearBrandRepository.save(brand);
+                        });
+            }
+        }
+
+        // process Textile Wear Categories
+        if (textileWearCategoriesFile != null && !textileWearCategoriesFile.isEmpty()) {
+            List<MTextileWearCategory> textileWearCategories = ExcelUtility.excelToTextileWearCategories(textileWearCategoriesFile.getInputStream());
+            for (MTextileWearCategory category : textileWearCategories) {
+                mTextileWearCategoryRepository.findByCategoryId(category.getCategoryId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setCategoryName(category.getCategoryName());
+                            existing.setNameInLocal(category.getNameInLocal());
+                            existing.setStatus(category.isStatus());
+                            mTextileWearCategoryRepository.save(existing);
+                        }, () -> {
+                            category.setId(null);
+                            mTextileWearCategoryRepository.save(category);
                         });
             }
         }
@@ -198,16 +308,16 @@ public class InitService {
         if (textileWearsFile != null && !textileWearsFile.isEmpty()) {
             List<MTextileWear> textileWears = ExcelUtility.excelToTextileWears(textileWearsFile.getInputStream());
             for (MTextileWear textileWear : textileWears) {
-                textileWearRepository.findByExcelId(textileWear.getExcelId())
+                mTextileWearRepository.findByTextileWearId(textileWear.getTextileWearId())
                         .ifPresentOrElse(existing -> {
                             existing.setTypeOfWear(textileWear.getTypeOfWear());
-                            existing.setCategory(textileWear.getCategory());
-                            existing.setAttireType(textileWear.getAttireType());
+                            existing.setCategoryId(textileWear.getCategoryId());
+                            existing.setNameInLocal(textileWear.getNameInLocal());
                             existing.setStatus(textileWear.isStatus());
-                            textileWearRepository.save(existing);
+                            mTextileWearRepository.save(existing);
                         }, () -> {
                             textileWear.setId(null);
-                            textileWearRepository.save(textileWear);
+                            mTextileWearRepository.save(textileWear);
                         });
             }
         }
@@ -216,16 +326,16 @@ public class InitService {
         if (textileWearBrandsFile != null && !textileWearBrandsFile.isEmpty()) {
             List<MTextileWearBrand> brands = ExcelUtility.excelToTextileWearBrands(textileWearBrandsFile.getInputStream());
             for (MTextileWearBrand brand : brands) {
-                textileWearBrandRepository.findByExcelId(brand.getExcelId())
+                mTextileWearBrandRepository.findByTextileWearBrandId(brand.getTextileWearBrandId())
                         .ifPresentOrElse(existing -> {
+                            existing.setCategoryId(brand.getCategoryId());
                             existing.setBrandName(brand.getBrandName());
-                            existing.setCategory(brand.getCategory());
-                            existing.setAttireType(brand.getAttireType());
+                            existing.setNameInLocal(brand.getNameInLocal());
                             existing.setStatus(brand.isStatus());
-                            textileWearBrandRepository.save(existing);
+                            mTextileWearBrandRepository.save(existing);
                         }, () -> {
                             brand.setId(null);
-                            textileWearBrandRepository.save(brand);
+                            mTextileWearBrandRepository.save(brand);
                         });
             }
         }

@@ -9,9 +9,10 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MJewelDto {
+public class MTextileWearCategoryDto {
     private UUID id;
-    private Long excelId;
-    private String productType;
+    private Long categoryId;
+    private String categoryName;
+    private String nameInLocal;
     private boolean status;
 }

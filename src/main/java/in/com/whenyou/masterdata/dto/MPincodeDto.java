@@ -11,7 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MPincodeDto {
     private UUID id;
-    private Long excelId;
+    private Long pincodeId;
+    private Long districtId;
     private String name;
     private String nameInLocal;
     private String pincode;

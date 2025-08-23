@@ -11,7 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MServeTypeDto {
     private UUID id;
-    private Long excelId;
+    private Long serveTypeId;
     private String serveType;
+    private String nameInLocal;
     private boolean status;
 }

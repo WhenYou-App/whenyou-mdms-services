@@ -3,9 +3,6 @@ package in.com.whenyou.masterdata.service;
 import in.com.whenyou.masterdata.dto.*;
 import in.com.whenyou.masterdata.entity.*;
 import in.com.whenyou.masterdata.repository.*;
-import in.com.whenyou.masterdata.dto.*;
-import in.com.whenyou.masterdata.entity.*;
-import in.com.whenyou.masterdata.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +13,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class MasterDataService {
-    @Autowired
-    MJewelRepository jewelsRepository;
-    @Autowired
-    MPincodeRepository mPincodeRepository;
-    @Autowired
-    MVehicleRepository mVehicleRepository;
-    @Autowired MMakeOverRepository makeOverRepository;
-    @Autowired
-    MDistrictRepository mDistrictRepository;
-    @Autowired
-    MServeTypeRepository serveTypeRepository;
-    @Autowired MTextileWearRepository textileWearRepository;
-    @Autowired MBoutiqueWearRepository boutiqueWearRepository;
-    @Autowired MJewelMaterialRepository jewelMaterialRepository;
-    @Autowired MTextileWearBrandRepository textileWearBrandRepository;
-    @Autowired MBoutiqueWearBrandRepository boutiqueWearBrandRepository;
+    @Autowired MPincodeRepository mPincodeRepository;
+    @Autowired MDistrictRepository mDistrictRepository;
+    @Autowired MServeTypeRepository mServeTypeRepository;
+    @Autowired MTextileWearRepository mTextileWearRepository;
+    @Autowired MMakeOverPackageRepository mMakeOverRepository;
+    @Autowired MBoutiqueWearRepository mBoutiqueWearRepository;
+    @Autowired MVehicleBrandRepository mVehicleBrandRepository;
+    @Autowired MJewelMaterialRepository mJewelMaterialRepository;
+    @Autowired MTextileWearBrandRepository mTextileWearBrandRepository;
+    @Autowired MJewelProductTypeRepository mJewelProductTypeRepository;
+    @Autowired MMakeOverCategoryRepository mMakeOverCategoryRepository;
+    @Autowired MVehicleModelTypeRepository mVehicleModelTypeRepository;
+    @Autowired MVehicleModelNameRepository mVehicleModelNameRepository;
+    @Autowired MBoutiqueWearBrandRepository mBoutiqueWearBrandRepository;
+    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
+    @Autowired MJewelMaterialPurityRepository mJewelMaterialPurityRepository;
+    @Autowired MTextileWearCategoryRepository mTextileWearCategoryRepository;
 
     //=========================================== District Service ======================================================
 
@@ -41,92 +39,96 @@ public class MasterDataService {
 
     //=========================================== Pincode Service ======================================================
 
-    public List<MPincodeDto> getActivePincodes(Optional<String> pincode) {
-        if (pincode.isPresent()) {
-            return mPincodeRepository.findByStatusAndPincode(true, pincode.get()).stream().map(fromMPincode()).collect(Collectors.toList());
-        }else {
+    public List<MPincodeDto> getActivePincodes(Optional<Long> districtId, Optional<String> pincode) {
+        if (districtId.isPresent() && pincode.isPresent()) {
+            return mPincodeRepository.findByStatusAndDistrictIdAndPincode(true, districtId.get(), pincode.get()).stream().map(fromMPincode()).collect(Collectors.toList());
+        } else if (districtId.isPresent()) {
+            return mPincodeRepository.findByStatusAndDistrictId(true, districtId.get()).stream().map(fromMPincode()).collect(Collectors.toList());
+        } else if (pincode.isPresent()) {
+                return mPincodeRepository.findByStatusAndPincode(true, pincode.get()).stream().map(fromMPincode()).collect(Collectors.toList());
+        } else {
             return mPincodeRepository.findByStatus(true).stream().map(fromMPincode()).collect(Collectors.toList());
         }
     }
 
     //=========================================== Vehicle Service ======================================================
 
-    public List<String> getActiveVehicleBrands() {
-        return mVehicleRepository.findByStatus(true).stream()
-                .map(vehicle -> fromVehicle().apply(vehicle).getBrandName()).distinct().collect(Collectors.toList());
+    public List<MVehicleBrandDto> getActiveVehicleBrands() {
+        return mVehicleBrandRepository.findByStatus(true).stream().map(fromVehicleBrand()).collect(Collectors.toList());
     }
 
-    public List<MVehicleDto> getActiveVehicles(Optional<String> brandName, Optional<String> modelType, Optional<String> modelName) {
-        if (brandName.isPresent() && modelType.isPresent() && modelName.isPresent()) {
-            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelTypeIgnoreCaseAndModelNameIgnoreCase(true, brandName.get(), modelType.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (brandName.isPresent() && modelType.isPresent()) {
-            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelTypeIgnoreCase(true, brandName.get(), modelType.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (brandName.isPresent() && modelName.isPresent()) {
-            return mVehicleRepository.findByStatusAndBrandNameIgnoreCaseAndModelNameIgnoreCase(true, brandName.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (modelType.isPresent() && modelName.isPresent()) {
-            return mVehicleRepository.findByStatusAndModelTypeIgnoreCaseAndModelNameIgnoreCase(true, modelType.get(), modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (modelType.isPresent()) {
-            return mVehicleRepository.findByStatusAndModelTypeIgnoreCase(true, modelType.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (modelName.isPresent()) {
-            return mVehicleRepository.findByStatusAndModelNameIgnoreCase(true, modelName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
-        } else if (brandName.isPresent()) {
-            return mVehicleRepository.findByStatusAndBrandNameIgnoreCase(true, brandName.get()).stream().map(fromVehicle()).collect(Collectors.toList());
+    public List<MVehicleModelTypeDto> getActiveVehicleModelTypes() {
+        return mVehicleModelTypeRepository.findByStatus(true).stream().map(fromVehicleModelType()).collect(Collectors.toList());
+    }
+
+    public List<MVehicleModelNameDto> getActiveVehicleModelNames(Optional<Long> brandId, Optional<Long> modelTypeId) {
+        if (brandId.isPresent() && modelTypeId.isPresent()) {
+            return mVehicleModelNameRepository.findByStatusAndBrandIdAndModelTypeId(true, brandId.get(), modelTypeId.get()).stream().map(fromVehicleModelName()).collect(Collectors.toList());
+        } else if (brandId.isPresent()) {
+            return mVehicleModelNameRepository.findByStatusAndBrandId(true, brandId.get()).stream().map(fromVehicleModelName()).collect(Collectors.toList());
+        } else if (modelTypeId.isPresent()) {
+            return mVehicleModelNameRepository.findByStatusAndModelTypeId(true, modelTypeId.get()).stream().map(fromVehicleModelName()).collect(Collectors.toList());
         } else {
-            return mVehicleRepository.findByStatus(true).stream().map(fromVehicle()).collect(Collectors.toList());
+            return mVehicleModelNameRepository.findByStatus(true).stream().map(fromVehicleModelName()).collect(Collectors.toList());
         }
     }
 
     //=========================================== Jewel Service ======================================================
 
-    public List<MJewelDto> getActiveJewels() {
-        return jewelsRepository.findByStatus(true).stream().map(fromJewel()).collect(Collectors.toList());
+    public List<MJewelProductTypeDto> getActiveJewels() {
+        return mJewelProductTypeRepository.findByStatus(true).stream().map(fromJewelProductType()).collect(Collectors.toList());
     }
 
-    //============================================ Jewel Material Service ======================================================
-
-    public List<String> getActiveJewelMaterials() {
-        return jewelMaterialRepository.findByStatus(true).stream()
-                .map(jewelMaterial -> fromJewelMaterial().apply(jewelMaterial).getMaterial()).distinct().collect(Collectors.toList());
+    public List<MJewelMaterialDto> getActiveJewelMaterials() {
+       return mJewelMaterialRepository.findByStatus(true).stream().map(fromJewelMaterial()).collect(Collectors.toList());
     }
 
-    public List<MJewelMaterialDto> getMaterialPurities(String material) {
-        return jewelMaterialRepository.findByStatus(true).stream().map(fromJewelMaterial()).collect(Collectors.toList());
+    public List<MJewelMaterialPurityDto> getActiveJewelMaterialPurities(Long materialId) {
+        return mJewelMaterialPurityRepository.findByStatusAndJewelMaterialId(true, materialId).stream().map(fromJewelMaterialPurity()).collect(Collectors.toList());
     }
 
     //=========================================== Catering Serve Type Service ======================================================
 
     public List<MServeTypeDto> getActiveServeTypes() {
-        return serveTypeRepository.findByStatus(true).stream().map(fromServeType()).collect(Collectors.toList());
+        return mServeTypeRepository.findByStatus(true).stream().map(fromServeType()).collect(Collectors.toList());
     }
 
     //=========================================== Make Over Service ======================================================
 
-    public List<MMakeOverDto> getActiveMakeOvers(String category) {
-        return makeOverRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromMakeOver()).collect(Collectors.toList());
+    public List<MMakeOverCategoryDto> getActiveMakeOverCategories() {
+        return mMakeOverCategoryRepository.findByStatus(true).stream().map(fromMakeOverCategory()).collect(Collectors.toList());
+    }
+
+    public List<MMakeOverPackageDto> getActiveMakeOvers(Long categoryId) {
+        return mMakeOverRepository.findByStatusAndCategoryId(true, categoryId).stream().map(fromMakeOver()).collect(Collectors.toList());
     }
 
     //=========================================== Boutique Wear Service ======================================================
 
-    public List<MBoutiqueWearDto> getActiveBoutiqueWears(String category) {
-        return boutiqueWearRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromBoutiqueWear()).collect(Collectors.toList());
+    public List<MBoutiqueWearCategoryDto> getActiveBoutiqueWearCategories() {
+        return mBoutiqueWearCategoryRepository.findByStatus(true).stream().map(fromBoutiqueWearCategory()).collect(Collectors.toList());
     }
 
-    //=========================================== Boutique Wear Brand Service ======================================================
+    public List<MBoutiqueWearDto> getActiveBoutiqueWears(Long categoryId) {
+        return mBoutiqueWearRepository.findByStatusAndCategoryId(true, categoryId).stream().map(fromBoutiqueWear()).collect(Collectors.toList());
+    }
 
-    public List<MBoutiqueWearBrandDto> getActiveBoutiqueWearBrands(String category, String attireType) {
-        return boutiqueWearBrandRepository.findByStatusAndCategoryIgnoreCaseAndAttireTypeIgnoreCase(true, category, attireType).stream().map(fromBoutiqueWearBrand()).collect(Collectors.toList());
+    public List<MBoutiqueWearBrandDto> getActiveBoutiqueWearBrands(Long categoryId) {
+        return mBoutiqueWearBrandRepository.findByStatusAndCategoryId(true, categoryId).stream().map(fromBoutiqueWearBrand()).collect(Collectors.toList());
     }
 
     //=========================================== Textile Wear Service ======================================================
 
-    public List<MTextileWearDto> getActiveTextileWears(String category) {
-        return textileWearRepository.findByStatusAndCategoryIgnoreCase(true, category).stream().map(fromTextileWear()).collect(Collectors.toList());
+    public List<MTextileWearCategoryDto> getActiveTextileWearCategories() {
+        return mTextileWearCategoryRepository.findByStatus(true).stream().map(fromTextileWearCategory()).collect(Collectors.toList());
     }
 
-    //=========================================== Textile Wear Brand Service ======================================================
+    public List<MTextileWearDto> getActiveTextileWears(Long categoryId) {
+        return mTextileWearRepository.findByStatusAndCategoryId(true, categoryId).stream().map(fromTextileWear()).collect(Collectors.toList());
+    }
 
-    public List<MTextileWearBrandDto> getActiveTextileWearBrands(String category, String attireType) {
-        return textileWearBrandRepository.findByStatusAndCategoryIgnoreCaseAndAttireTypeIgnoreCase(true, category, attireType).stream().map(fromTextileWearBrand()).collect(Collectors.toList());
+    public List<MTextileWearBrandDto> getActiveTextileWearBrands(Long categoryId) {
+        return mTextileWearBrandRepository.findByStatusAndCategoryId(true, categoryId).stream().map(fromTextileWearBrand()).collect(Collectors.toList());
     }
 
     //=========================================== District Converter Function ======================================================
@@ -137,7 +139,7 @@ public class MasterDataService {
             public MDistrictDto apply(MDistrict mDistrict) {
                 return MDistrictDto.builder()
                         .id(mDistrict.getId())
-                        .excelId(mDistrict.getExcelId())
+                        .districtId(mDistrict.getDistrictId())
                         .name(mDistrict.getName())
                         .nameInLocal(mDistrict.getNameInLocal())
                         .status(mDistrict.isStatus())
@@ -154,7 +156,8 @@ public class MasterDataService {
             public MPincodeDto apply(MPincode mPincode) {
                 return MPincodeDto.builder()
                         .id(mPincode.getId())
-                        .excelId(mPincode.getExcelId())
+                        .pincodeId(mPincode.getPincodeId())
+                        .districtId(mPincode.getDistrictId())
                         .name(mPincode.getName())
                         .nameInLocal(mPincode.getNameInLocal())
                         .pincode(mPincode.getPincode())
@@ -166,17 +169,47 @@ public class MasterDataService {
 
     //=========================================== Vehicle Converter Function ======================================================
 
-    public Function<MVehicle, MVehicleDto> fromVehicle() {
-        return new Function<MVehicle, MVehicleDto>() {
+    public Function<MVehicleBrand, MVehicleBrandDto> fromVehicleBrand() {
+        return new Function<MVehicleBrand, MVehicleBrandDto>() {
             @Override
-            public MVehicleDto apply(MVehicle mVehicle) {
-                return MVehicleDto.builder()
-                        .id(mVehicle.getId())
-                        .excelId(mVehicle.getExcelId())
-                        .brandName(mVehicle.getBrandName())
-                        .modelType(mVehicle.getModelType())
-                        .modelName(mVehicle.getModelName())
-                        .status(mVehicle.isStatus())
+            public MVehicleBrandDto apply(MVehicleBrand mVehicleBrand) {
+                return MVehicleBrandDto.builder()
+                        .id(mVehicleBrand.getId())
+                        .brandId(mVehicleBrand.getBrandId())
+                        .brandName(mVehicleBrand.getBrandName())
+                        .nameInLocal(mVehicleBrand.getNameInLocal())
+                        .status(mVehicleBrand.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    public Function<MVehicleModelType, MVehicleModelTypeDto> fromVehicleModelType() {
+        return new Function<MVehicleModelType, MVehicleModelTypeDto>() {
+            @Override
+            public MVehicleModelTypeDto apply(MVehicleModelType mVehicleModelType) {
+                return MVehicleModelTypeDto.builder()
+                        .id(mVehicleModelType.getId())
+                        .modelTypeId(mVehicleModelType.getModelTypeId())
+                        .modelTypeName(mVehicleModelType.getModelTypeName())
+                        .status(mVehicleModelType.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    public Function<MVehicleModelName, MVehicleModelNameDto> fromVehicleModelName() {
+        return new Function<MVehicleModelName, MVehicleModelNameDto>() {
+            @Override
+            public MVehicleModelNameDto apply(MVehicleModelName mVehicleModelName) {
+                return MVehicleModelNameDto.builder()
+                        .id(mVehicleModelName.getId())
+                        .modelNameId(mVehicleModelName.getModelNameId())
+                        .brandId(mVehicleModelName.getBrandId())
+                        .modelTypeId(mVehicleModelName.getModelTypeId())
+                        .modelName(mVehicleModelName.getModelName())
+                        .nameInLocal(mVehicleModelName.getNameInLocal())
+                        .status(mVehicleModelName.isStatus())
                         .build();
             }
         };
@@ -184,15 +217,16 @@ public class MasterDataService {
 
     //=========================================== Jewel Converter Function ======================================================
 
-    public Function<MJewel, MJewelDto> fromJewel() {
-        return new Function<MJewel, MJewelDto>() {
+    public Function<MJewelProductType, MJewelProductTypeDto> fromJewelProductType() {
+        return new Function<MJewelProductType, MJewelProductTypeDto>() {
             @Override
-            public MJewelDto apply(MJewel mJewel) {
-                return MJewelDto.builder()
-                        .id(mJewel.getId())
-                        .excelId(mJewel.getExcelId())
-                        .productType(mJewel.getProductType())
-                        .status(mJewel.isStatus())
+            public MJewelProductTypeDto apply(MJewelProductType mJewelProductType) {
+                return MJewelProductTypeDto.builder()
+                        .id(mJewelProductType.getId())
+                        .jewelProductTypeId(mJewelProductType.getJewelProductTypeId())
+                        .productTypeName(mJewelProductType.getProductTypeName())
+                        .nameInLocal(mJewelProductType.getNameInLocal())
+                        .status(mJewelProductType.isStatus())
                         .build();
             }
         };
@@ -206,10 +240,27 @@ public class MasterDataService {
             public MJewelMaterialDto apply(MJewelMaterial mJewelMaterial) {
                 return MJewelMaterialDto.builder()
                         .id(mJewelMaterial.getId())
-                        .excelId(mJewelMaterial.getExcelId())
-                        .material(mJewelMaterial.getMaterial())
-                        .purity(mJewelMaterial.getPurity())
+                        .jewelMaterialId(mJewelMaterial.getJewelMaterialId())
+                        .materialName(mJewelMaterial.getMaterialName())
+                        .nameInLocal(mJewelMaterial.getNameInLocal())
                         .status(mJewelMaterial.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Jewel Material Purity Converter Function ======================================================
+
+    public Function<MJewelMaterialPurity, MJewelMaterialPurityDto> fromJewelMaterialPurity() {
+        return new Function<MJewelMaterialPurity, MJewelMaterialPurityDto>() {
+            @Override
+            public MJewelMaterialPurityDto apply(MJewelMaterialPurity mJewelMaterialPurity) {
+                return MJewelMaterialPurityDto.builder()
+                        .id(mJewelMaterialPurity.getId())
+                        .jewelMaterialPurityId(mJewelMaterialPurity.getJewelMaterialPurityId())
+                        .jewelMaterialId(mJewelMaterialPurity.getJewelMaterialId())
+                        .materialPurity(mJewelMaterialPurity.getMaterialPurity())
+                        .status(mJewelMaterialPurity.isStatus())
                         .build();
             }
         };
@@ -223,9 +274,27 @@ public class MasterDataService {
             public MServeTypeDto apply(MServeType mServeType) {
                 return MServeTypeDto.builder()
                         .id(mServeType.getId())
-                        .excelId(mServeType.getExcelId())
+                        .serveTypeId(mServeType.getServeTypeId())
                         .serveType(mServeType.getServeType())
+                        .nameInLocal(mServeType.getNameInLocal())
                         .status(mServeType.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Make Over Category Converter Function ======================================================
+
+    public Function<MMakeOverCategory, MMakeOverCategoryDto> fromMakeOverCategory() {
+        return new Function<MMakeOverCategory, MMakeOverCategoryDto>() {
+            @Override
+            public MMakeOverCategoryDto apply(MMakeOverCategory mMakeOverCategory) {
+                return MMakeOverCategoryDto.builder()
+                        .id(mMakeOverCategory.getId())
+                        .categoryId(mMakeOverCategory.getCategoryId())
+                        .categoryName(mMakeOverCategory.getCategoryName())
+                        .nameInLocal(mMakeOverCategory.getNameInLocal())
+                        .status(mMakeOverCategory.isStatus())
                         .build();
             }
         };
@@ -233,16 +302,34 @@ public class MasterDataService {
 
     //=========================================== Make Over Service Converter Function ======================================================
 
-    public Function<MMakeOver, MMakeOverDto> fromMakeOver() {
-        return new Function<MMakeOver, MMakeOverDto>() {
+    public Function<MMakeOverPackage, MMakeOverPackageDto> fromMakeOver() {
+        return new Function<MMakeOverPackage, MMakeOverPackageDto>() {
             @Override
-            public MMakeOverDto apply(MMakeOver mMakeOver) {
-                return MMakeOverDto.builder()
-                        .id(mMakeOver.getId())
-                        .excelId(mMakeOver.getExcelId())
-                        .packageName(mMakeOver.getPackageName())
-                        .category(mMakeOver.getCategory())
-                        .status(mMakeOver.isStatus())
+            public MMakeOverPackageDto apply(MMakeOverPackage mMakeOverPackage) {
+                return MMakeOverPackageDto.builder()
+                        .id(mMakeOverPackage.getId())
+                        .packageId(mMakeOverPackage.getPackageId())
+                        .categoryId(mMakeOverPackage.getCategoryId())
+                        .packageName(mMakeOverPackage.getPackageName())
+                        .nameInLocal(mMakeOverPackage.getNameInLocal())
+                        .status(mMakeOverPackage.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Boutique Wear Category Converter Function ======================================================
+
+    public Function<MBoutiqueWearCategory, MBoutiqueWearCategoryDto> fromBoutiqueWearCategory() {
+        return new Function<MBoutiqueWearCategory, MBoutiqueWearCategoryDto>() {
+            @Override
+            public MBoutiqueWearCategoryDto apply(MBoutiqueWearCategory mBoutiqueWearCategory) {
+                return MBoutiqueWearCategoryDto.builder()
+                        .id(mBoutiqueWearCategory.getId())
+                        .categoryId(mBoutiqueWearCategory.getCategoryId())
+                        .categoryName(mBoutiqueWearCategory.getCategoryName())
+                        .nameInLocal(mBoutiqueWearCategory.getNameInLocal())
+                        .status(mBoutiqueWearCategory.isStatus())
                         .build();
             }
         };
@@ -256,10 +343,10 @@ public class MasterDataService {
             public MBoutiqueWearDto apply(MBoutiqueWear mBoutiqueWear) {
                 return MBoutiqueWearDto.builder()
                         .id(mBoutiqueWear.getId())
-                        .excelId(mBoutiqueWear.getExcelId())
+                        .boutiqueWearId(mBoutiqueWear.getBoutiqueWearId())
+                        .categoryId(mBoutiqueWear.getCategoryId())
                         .typeOfWear(mBoutiqueWear.getTypeOfWear())
-                        .category(mBoutiqueWear.getCategory())
-                        .attireType(mBoutiqueWear.getAttireType())
+                        .nameInLocal(mBoutiqueWear.getNameInLocal())
                         .status(mBoutiqueWear.isStatus())
                         .build();
             }
@@ -274,11 +361,28 @@ public class MasterDataService {
             public MBoutiqueWearBrandDto apply(MBoutiqueWearBrand mBoutiqueWearBrand) {
                 return MBoutiqueWearBrandDto.builder()
                         .id(mBoutiqueWearBrand.getId())
-                        .excelId(mBoutiqueWearBrand.getExcelId())
+                        .boutiqueWearBrandId(mBoutiqueWearBrand.getBoutiqueWearBrandId())
+                        .categoryId(mBoutiqueWearBrand.getCategoryId())
                         .brandName(mBoutiqueWearBrand.getBrandName())
-                        .category(mBoutiqueWearBrand.getCategory())
-                        .attireType(mBoutiqueWearBrand.getAttireType())
+                        .nameInLocal(mBoutiqueWearBrand.getNameInLocal())
                         .status(mBoutiqueWearBrand.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Textile Wear Category Converter Function ======================================================
+
+    public Function<MTextileWearCategory, MTextileWearCategoryDto> fromTextileWearCategory() {
+        return new Function<MTextileWearCategory, MTextileWearCategoryDto>() {
+            @Override
+            public MTextileWearCategoryDto apply(MTextileWearCategory mTextileWearCategory) {
+                return MTextileWearCategoryDto.builder()
+                        .id(mTextileWearCategory.getId())
+                        .categoryId(mTextileWearCategory.getCategoryId())
+                        .categoryName(mTextileWearCategory.getCategoryName())
+                        .nameInLocal(mTextileWearCategory.getNameInLocal())
+                        .status(mTextileWearCategory.isStatus())
                         .build();
             }
         };
@@ -292,10 +396,10 @@ public class MasterDataService {
             public MTextileWearDto apply(MTextileWear mTextileWear) {
                 return MTextileWearDto.builder()
                         .id(mTextileWear.getId())
-                        .excelId(mTextileWear.getExcelId())
+                        .textileWearId(mTextileWear.getTextileWearId())
+                        .categoryId(mTextileWear.getCategoryId())
                         .typeOfWear(mTextileWear.getTypeOfWear())
-                        .category(mTextileWear.getCategory())
-                        .attireType(mTextileWear.getAttireType())
+                        .nameInLocal(mTextileWear.getNameInLocal())
                         .status(mTextileWear.isStatus())
                         .build();
             }
@@ -310,10 +414,10 @@ public class MasterDataService {
             public MTextileWearBrandDto apply(MTextileWearBrand mTextileWearBrand) {
                 return MTextileWearBrandDto.builder()
                         .id(mTextileWearBrand.getId())
-                        .excelId(mTextileWearBrand.getExcelId())
+                        .textileWearBrandId(mTextileWearBrand.getTextileWearBrandId())
+                        .categoryId(mTextileWearBrand.getCategoryId())
                         .brandName(mTextileWearBrand.getBrandName())
-                        .category(mTextileWearBrand.getCategory())
-                        .attireType(mTextileWearBrand.getAttireType())
+                        .nameInLocal(mTextileWearBrand.getNameInLocal())
                         .status(mTextileWearBrand.isStatus())
                         .build();
             }

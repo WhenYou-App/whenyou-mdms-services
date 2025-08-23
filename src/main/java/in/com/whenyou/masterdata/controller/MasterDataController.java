@@ -1,11 +1,9 @@
 package in.com.whenyou.masterdata.controller;
 
 import in.com.whenyou.masterdata.dto.*;
-import in.com.whenyou.masterdata.dto.*;
 import in.com.whenyou.masterdata.service.MasterDataService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,16 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@Tag(name = "/APIs for Master data", description = "Apis for Master data.")
+@Tag(name = "APIs for Master data", description = "Apis for Master data.")
 @RequestMapping("/api/master")
 public class MasterDataController {
-
-    @Value("${login-service.url}")
-    private String loginServiceUrl;
-
-    @Value("${spring.security.jwt.prefix}")
-    private String prefix;
-
     @Autowired MasterDataService masterDataService;
 
     // =========================================== Districts Controller =============================================================
@@ -35,80 +26,94 @@ public class MasterDataController {
     // =========================================== Pincodes Controller ===============================================================
 
     @GetMapping("/pincodes")
-    public ResponseEntity<List<MPincodeDto>> getPincodes(@RequestParam Optional<String> pincode) {
-        return ResponseEntity.ok(masterDataService.getActivePincodes(pincode));
+    public ResponseEntity<List<MPincodeDto>> getPincodes(@RequestParam Optional<Long> districtId, @RequestParam Optional<String> pincode) {
+        return ResponseEntity.ok(masterDataService.getActivePincodes(districtId, pincode));
     }
 
     // =========================================== Vehicle Controller =================================================
 
-    @GetMapping("/vehicle-brands")
-    public ResponseEntity<List<String>> getVehicleBrands() {
+    @GetMapping("/vehicle/brands")
+    public ResponseEntity<List<MVehicleBrandDto>> getVehicleBrands() {
         return ResponseEntity.ok(masterDataService.getActiveVehicleBrands());
     }
 
-    @GetMapping("/vehicles")
-    public ResponseEntity<List<MVehicleDto>> getVehicles(@RequestParam Optional<String> brandName, @RequestParam Optional<String> modelType, @RequestParam Optional<String> modelName) {
-        return ResponseEntity.ok(masterDataService.getActiveVehicles(brandName, modelType, modelName));
+    @GetMapping("/vehicle/model-types")
+    public ResponseEntity<List<MVehicleModelTypeDto>> getVehicleModelTypes() {
+        return ResponseEntity.ok(masterDataService.getActiveVehicleModelTypes());
+    }
+
+    @GetMapping("/vehicle/model-names")
+    public ResponseEntity<List<MVehicleModelNameDto>> getVehicleModelNames(@RequestParam Optional<Long> brandId, @RequestParam Optional<Long> modelTypeId) {
+        return ResponseEntity.ok(masterDataService.getActiveVehicleModelNames(brandId, modelTypeId));
     }
 
     // =========================================== Jewel Controller =================================================
 
     @GetMapping("/jewels")
-    public ResponseEntity<List<MJewelDto>> getJewels() {
+    public ResponseEntity<List<MJewelProductTypeDto>> getJewels() {
         return ResponseEntity.ok(masterDataService.getActiveJewels());
     }
 
-    // =========================================== Jewel Material Controller =================================================
-
-    @GetMapping("/jewel-materials")
-    public ResponseEntity<List<String>> getJewelMaterials() {
+    @GetMapping("/jewel/materials")
+    public ResponseEntity<List<MJewelMaterialDto>> getJewelMaterials() {
         return ResponseEntity.ok(masterDataService.getActiveJewelMaterials());
     }
 
-    @GetMapping("/jewel-purities/{material}")
-    public ResponseEntity<List<MJewelMaterialDto>> getJewelPurities(@PathVariable String material) {
-        return ResponseEntity.ok(masterDataService.getMaterialPurities(material));
+    @GetMapping("/jewel/material/purities/{materialId}")
+    public ResponseEntity<List<MJewelMaterialPurityDto>> getJewelPurities(@PathVariable Long materialId) {
+        return ResponseEntity.ok(masterDataService.getActiveJewelMaterialPurities(materialId));
     }
 
     //=========================================== Catering Serve Type Controller ======================================================
 
-    @GetMapping("/catering-serve-types")
+    @GetMapping("/catering/serve-types")
     public ResponseEntity<List<MServeTypeDto>> getActiveServeTypes() {
         return ResponseEntity.ok(masterDataService.getActiveServeTypes());
     }
 
     //=========================================== Make Over Controller ======================================================
 
-    @GetMapping("/make-overs/{category}")
-    public ResponseEntity<List<MMakeOverDto>> getActiveMakeOvers(@PathVariable String category) {
-        return ResponseEntity.ok(masterDataService.getActiveMakeOvers(category));
+    @GetMapping("/make-over/categories")
+    public ResponseEntity<List<MMakeOverCategoryDto>> getActiveMakeOverCategories() {
+        return ResponseEntity.ok(masterDataService.getActiveMakeOverCategories());
+    }
+
+    @GetMapping("/make-overs/{categoryId}")
+    public ResponseEntity<List<MMakeOverPackageDto>> getActiveMakeOvers(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(masterDataService.getActiveMakeOvers(categoryId));
     }
 
     //=========================================== Boutique Wear Controller ======================================================
 
-    @GetMapping("/boutique-wears/{category}")
-    public ResponseEntity<List<MBoutiqueWearDto>> getActiveBoutiqueWears(@PathVariable String category) {
-        return ResponseEntity.ok(masterDataService.getActiveBoutiqueWears(category));
+    @GetMapping("/boutique-wear-categories")
+    public ResponseEntity<List<MBoutiqueWearCategoryDto>> getActiveBoutiqueWearCategories() {
+        return ResponseEntity.ok(masterDataService.getActiveBoutiqueWearCategories());
     }
 
-    //=========================================== Boutique Wear Brand Controller ======================================================
+    @GetMapping("/boutique-wears/{categoryId}")
+    public ResponseEntity<List<MBoutiqueWearDto>> getActiveBoutiqueWears(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(masterDataService.getActiveBoutiqueWears(categoryId));
+    }
 
-    @GetMapping("/boutique-wear-brands/{category}/{attireType}")
-    public ResponseEntity<List<MBoutiqueWearBrandDto>> getActiveBoutiqueWearBrands(@PathVariable String category, @PathVariable String attireType) {
-        return ResponseEntity.ok(masterDataService.getActiveBoutiqueWearBrands(category, attireType));
+    @GetMapping("/boutique-wear-brands/{categoryId}")
+    public ResponseEntity<List<MBoutiqueWearBrandDto>> getActiveBoutiqueWearBrands(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(masterDataService.getActiveBoutiqueWearBrands(categoryId));
     }
 
     //=========================================== Textile Wear Controller ======================================================
 
-    @GetMapping("/textile-wears/{category}")
-    public ResponseEntity<List<MTextileWearDto>> getActiveTextileWears(@PathVariable String category) {
-        return ResponseEntity.ok(masterDataService.getActiveTextileWears(category));
+    @GetMapping("/textile-wear-categories")
+    public ResponseEntity<List<MTextileWearCategoryDto>> getActiveTextileWearCategories() {
+        return ResponseEntity.ok(masterDataService.getActiveTextileWearCategories());
     }
 
-    //=========================================== Textile Wear Brand Controller ======================================================
+    @GetMapping("/textile-wears/{categoryId}")
+    public ResponseEntity<List<MTextileWearDto>> getActiveTextileWears(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(masterDataService.getActiveTextileWears(categoryId));
+    }
 
-    @GetMapping("/textile-wear-brands/{category}/{attireType}")
-    public ResponseEntity<List<MTextileWearBrandDto>> getActiveTextileWearBrands(@PathVariable String category, @PathVariable String attireType) {
-        return ResponseEntity.ok(masterDataService.getActiveTextileWearBrands(category, attireType));
+    @GetMapping("/textile-wear-brands/{categoryId}")
+    public ResponseEntity<List<MTextileWearBrandDto>> getActiveTextileWearBrands(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(masterDataService.getActiveTextileWearBrands(categoryId));
     }
 }

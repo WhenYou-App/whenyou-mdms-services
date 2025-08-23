@@ -45,18 +45,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 200MB
 
-  security:
-    jwt:
-      secret: 69lHwuwb6501cRvtHBhBzX4WDi4NPCh/STDXMO/xW59uDbd6OS/7nxzCIDlgid+aDRTteMX11ExJQ6pUQ0UVBA==
-      expiration: 86400000
-      header: Authorization
-      prefix: Bearer
-sms:
-  api:
-    url: https://thesmsbuddy.com/api/v1/sms/send
 
-login-service:
-  url: http://whenyou-vendor-onboarding-services
 
 
 

@@ -12,26 +12,23 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "m_pincodes")
-public class MPincode {
+@Table(name = "m_make_over_packages")
+public class MMakeOverPackage {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long pincodeId;
+    private Long packageId;
 
     @Column
-    private Long districtId;
+    private Long categoryId;
 
     @Column
-    private String name;
+    private String packageName;
 
     @Column
     private String nameInLocal;
-
-    @Column
-    private String pincode;
 
     @Column
     private boolean status;

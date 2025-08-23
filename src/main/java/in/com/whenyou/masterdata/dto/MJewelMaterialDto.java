@@ -10,8 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MJewelMaterialDto {
     private UUID id;
-    private Long excelId;
-    private String material;
-    private String purity;
+    private Long jewelMaterialId;
+    private String materialName;
+    private String nameInLocal;
     private boolean status;
 }

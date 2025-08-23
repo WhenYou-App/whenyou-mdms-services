@@ -1,7 +1,6 @@
 package in.com.whenyou.masterdata.excelutil;
 
 import in.com.whenyou.masterdata.entity.*;
-import in.com.whenyou.masterdata.entity.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -26,9 +25,9 @@ public class ExcelUtility {
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
                     try {
-                        district.setExcelId(Long.parseLong(idStr));
+                        district.setDistrictId(Long.parseLong(idStr));
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid Excel ID at row " + rowNumber + ": " + idStr);
+                        throw new IllegalArgumentException("Invalid District ID at row " + rowNumber + ": " + idStr);
                     }
                 }
                 district.setName(getCellValueAsString(row.getCell(1)));
@@ -71,15 +70,23 @@ public class ExcelUtility {
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
                     try {
-                        pincode.setExcelId(Long.parseLong(idStr));
+                        pincode.setPincodeId(Long.parseLong(idStr));
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid Excel ID at row " + rowNumber + ": " + idStr);
+                        throw new IllegalArgumentException("Invalid Pincode ID at row " + rowNumber + ": " + idStr);
                     }
                 }
-                pincode.setName(getCellValueAsString(row.getCell(1)));
-                pincode.setNameInLocal(getCellValueAsString(row.getCell(2)));
-                pincode.setPincode(getCellValueAsString(row.getCell(3)));
-                String statusStr = getCellValueAsString(row.getCell(4));
+                String districtIdStr = getCellValueAsString(row.getCell(1));
+                if (districtIdStr != null && !districtIdStr.isEmpty()) {
+                    try {
+                        pincode.setDistrictId(Long.parseLong(districtIdStr));
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid District ID at row " + rowNumber + ": " + idStr);
+                    }
+                }
+                pincode.setName(getCellValueAsString(row.getCell(2)));
+                pincode.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                pincode.setPincode(getCellValueAsString(row.getCell(4)));
+                String statusStr = getCellValueAsString(row.getCell(5));
                 if (statusStr != null && !statusStr.isEmpty()) {
                     pincode.setStatus(Boolean.parseBoolean(statusStr));
                 }
@@ -116,8 +123,8 @@ public class ExcelUtility {
         }
     }
 
-    public static List<MVehicle> excelToVehicles(InputStream is) throws IOException {
-        List<MVehicle> vehicles = new ArrayList<>();
+    public static List<MVehicleBrand> excelToVehicleBrands(InputStream is) throws IOException {
+        List<MVehicleBrand> vehicles = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rows = sheet.iterator();
@@ -126,19 +133,18 @@ public class ExcelUtility {
                 Row row = rows.next();
                 if (rowNumber++ == 0) continue; // Skip header row
                 if (isRowEmpty(row)) continue; // Skip empty rows
-                MVehicle vehicle = new MVehicle();
+                MVehicleBrand vehicle = new MVehicleBrand();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
                     try {
-                        vehicle.setExcelId(Long.parseLong(idStr));
+                        vehicle.setBrandId(Long.parseLong(idStr));
                     } catch (NumberFormatException e) {
                         throw new IllegalArgumentException("Invalid Excel ID at row " + rowNumber + ": " + idStr);
                     }
                 }
                 vehicle.setBrandName(getCellValueAsString(row.getCell(1)));
-                vehicle.setModelType(getCellValueAsString(row.getCell(2)));
-                vehicle.setModelName(getCellValueAsString(row.getCell(3)));
-                String statusStr = getCellValueAsString(row.getCell(4));
+                vehicle.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
                 if (statusStr != null && !statusStr.isEmpty()) {
                     vehicle.setStatus(Boolean.parseBoolean(statusStr));
                 }
@@ -148,8 +154,68 @@ public class ExcelUtility {
         return vehicles;
     }
 
-    public static List<MJewel> excelToJewels(InputStream is) throws IOException {
-        List<MJewel> jewels = new ArrayList<>();
+    // Vehicle Model Type
+    public static List<MVehicleModelType> excelToVehicleModelTypes(InputStream is) throws IOException {
+        List<MVehicleModelType> vehicleModels = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MVehicleModelType vehicleModel = new MVehicleModelType();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    vehicleModel.setModelTypeId(Long.parseLong(idStr));
+                }
+                vehicleModel.setModelTypeName(getCellValueAsString(row.getCell(1)));
+                vehicleModel.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    vehicleModel.setStatus(Boolean.parseBoolean(statusStr));
+                }                vehicleModels.add(vehicleModel);
+            }
+        }
+        return vehicleModels;
+    }
+
+    // Vehicle Model Name
+    public static List<MVehicleModelName> excelToVehicleModelNames(InputStream is) throws IOException {
+        List<MVehicleModelName> vehicleModelNames = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MVehicleModelName vehicleModelName = new MVehicleModelName();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    vehicleModelName.setModelNameId(Long.parseLong(idStr));
+                }
+                vehicleModelName.setBrandId(Long.parseLong(getCellValueAsString(row.getCell(1))));
+                vehicleModelName.setModelTypeId(Long.parseLong(getCellValueAsString(row.getCell(2))));
+                vehicleModelName.setModelName(getCellValueAsString(row.getCell(3)));
+                vehicleModelName.setNameInLocal(getCellValueAsString(row.getCell(4)));
+                String statusStr = getCellValueAsString(row.getCell(5));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    vehicleModelName.setStatus(Boolean.parseBoolean(statusStr));
+                }                vehicleModelNames.add(vehicleModelName);
+            }
+        }
+        return vehicleModelNames;
+    }
+
+    // Jewel Product Type
+    public static List<MJewelProductType> excelToJewels(InputStream is) throws IOException {
+        List<MJewelProductType> jewels = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rows = sheet.iterator();
@@ -160,14 +226,17 @@ public class ExcelUtility {
                 if (rowNumber++ == 0) continue; // Skip header
                 if (isRowEmpty(row)) continue;
 
-                MJewel jewel = new MJewel();
+                MJewelProductType jewel = new MJewelProductType();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    jewel.setExcelId(Long.parseLong(idStr));
+                    jewel.setJewelProductTypeId(Long.parseLong(idStr));
                 }
-                jewel.setProductType(getCellValueAsString(row.getCell(1)));
-                jewel.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(2))));
-
+                jewel.setProductTypeName(getCellValueAsString(row.getCell(1)));
+                jewel.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    jewel.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 jewels.add(jewel);
             }
         }
@@ -189,16 +258,50 @@ public class ExcelUtility {
                 MJewelMaterial jewelMaterial = new MJewelMaterial();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    jewelMaterial.setExcelId(Long.parseLong(idStr));
+                    jewelMaterial.setJewelMaterialId(Long.parseLong(idStr));
                 }
-                jewelMaterial.setMaterial(getCellValueAsString(row.getCell(1)));
-                jewelMaterial.setPurity(getCellValueAsString(row.getCell(2)));
-                jewelMaterial.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
-
+                jewelMaterial.setMaterialName(getCellValueAsString(row.getCell(1)));
+                jewelMaterial.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    jewelMaterial.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 jewelMaterials.add(jewelMaterial);
             }
         }
         return jewelMaterials;
+    }
+
+    // Material Purity
+    public static List<MJewelMaterialPurity> excelToJewelMaterialPurities(InputStream is) throws IOException {
+        List<MJewelMaterialPurity> purities = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue; // Skip header
+                if (isRowEmpty(row)) continue;
+
+                MJewelMaterialPurity purity = new MJewelMaterialPurity();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    purity.setJewelMaterialPurityId(Long.parseLong(idStr));
+                }
+                String jewelMaterialIdStr = getCellValueAsString(row.getCell(1));
+                if (jewelMaterialIdStr != null && !jewelMaterialIdStr.isEmpty()) {
+                    purity.setJewelMaterialId(Long.parseLong(jewelMaterialIdStr));
+                }
+                purity.setMaterialPurity(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    purity.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                purities.add(purity);
+            }
+        }
+        return purities;
     }
 
     public static List<MServeType> excelToServeTypes(InputStream is) throws IOException {
@@ -216,19 +319,23 @@ public class ExcelUtility {
                 MServeType serveType = new MServeType();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    serveType.setExcelId(Long.parseLong(idStr));
+                    serveType.setServeTypeId(Long.parseLong(idStr));
                 }
                 serveType.setServeType(getCellValueAsString(row.getCell(1)));
-                serveType.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(2))));
-
+                serveType.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    serveType.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 serveTypes.add(serveType);
             }
         }
         return serveTypes;
     }
 
-    public static List<MMakeOver> excelToMakeOvers(InputStream is) throws IOException {
-        List<MMakeOver> makeOvers = new ArrayList<>();
+    // Make Over Category
+    public static List<MMakeOverCategory> excelToMakeOverCategories(InputStream is) throws IOException {
+        List<MMakeOverCategory> categories = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rows = sheet.iterator();
@@ -239,19 +346,84 @@ public class ExcelUtility {
                 if (rowNumber++ == 0) continue;
                 if (isRowEmpty(row)) continue;
 
-                MMakeOver makeOver = new MMakeOver();
+                MMakeOverCategory category = new MMakeOverCategory();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    makeOver.setExcelId(Long.parseLong(idStr));
+                    category.setCategoryId(Long.parseLong(idStr));
                 }
-                makeOver.setPackageName(getCellValueAsString(row.getCell(1)));
-                makeOver.setCategory(getCellValueAsString(row.getCell(2)));
-                makeOver.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(3))));
+                category.setCategoryName(getCellValueAsString(row.getCell(1)));
+                category.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    category.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                categories.add(category);
+            }
+        }
+        return categories;
+    }
 
+    public static List<MMakeOverPackage> excelToMakeOvers(InputStream is) throws IOException {
+        List<MMakeOverPackage> makeOvers = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MMakeOverPackage makeOver = new MMakeOverPackage();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    makeOver.setPackageId(Long.parseLong(idStr));
+                }
+                String categoryIdStr = getCellValueAsString(row.getCell(1));
+                if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+                    makeOver.setCategoryId(Long.parseLong(categoryIdStr));
+                }
+                makeOver.setPackageName(getCellValueAsString(row.getCell(2)));
+                makeOver.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    makeOver.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 makeOvers.add(makeOver);
             }
         }
         return makeOvers;
+    }
+
+    // Boutique Wear Category
+    public static List<MBoutiqueWearCategory> excelToBoutiqueWearCategories(InputStream is) throws IOException {
+        List<MBoutiqueWearCategory> categories = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MBoutiqueWearCategory category = new MBoutiqueWearCategory();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    category.setCategoryId(Long.parseLong(idStr));
+                }
+                category.setCategoryName(getCellValueAsString(row.getCell(1)));
+                category.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    category.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                categories.add(category);
+            }
+        }
+        return categories;
     }
 
     public static List<MBoutiqueWear> excelToBoutiqueWears(InputStream is) throws IOException {
@@ -269,13 +441,18 @@ public class ExcelUtility {
                 MBoutiqueWear wear = new MBoutiqueWear();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    wear.setExcelId(Long.parseLong(idStr));
+                    wear.setBoutiqueWearId(Long.parseLong(idStr));
                 }
-                wear.setCategory(getCellValueAsString(row.getCell(1)));
+                String categoryIdStr = getCellValueAsString(row.getCell(1));
+                if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+                    wear.setCategoryId(Long.parseLong(categoryIdStr));
+                }
                 wear.setTypeOfWear(getCellValueAsString(row.getCell(2)));
-                wear.setAttireType(getCellValueAsString(row.getCell(3)));
-                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
-
+                wear.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    wear.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 boutiqueWears.add(wear);
             }
         }
@@ -297,17 +474,51 @@ public class ExcelUtility {
                 MBoutiqueWearBrand brand = new MBoutiqueWearBrand();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    brand.setExcelId(Long.parseLong(idStr));
+                    brand.setBoutiqueWearBrandId(Long.parseLong(idStr));
                 }
-                brand.setCategory(getCellValueAsString(row.getCell(1)));
+                String categoryIdStr = getCellValueAsString(row.getCell(1));
+                if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+                    brand.setCategoryId(Long.parseLong(categoryIdStr));
+                }
                 brand.setBrandName(getCellValueAsString(row.getCell(2)));
-                brand.setAttireType(getCellValueAsString(row.getCell(3)));
-                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
-
+                brand.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    brand.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 brands.add(brand);
             }
         }
         return brands;
+    }
+
+    // Textile Wear Category
+    public static List<MTextileWearCategory> excelToTextileWearCategories(InputStream is) throws IOException {
+        List<MTextileWearCategory> categories = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MTextileWearCategory category = new MTextileWearCategory();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    category.setCategoryId(Long.parseLong(idStr));
+                }
+                category.setCategoryName(getCellValueAsString(row.getCell(1)));
+                category.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    category.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                categories.add(category);
+            }
+        }
+        return categories;
     }
 
     public static List<MTextileWear> excelToTextileWears(InputStream is) throws IOException {
@@ -325,13 +536,18 @@ public class ExcelUtility {
                 MTextileWear wear = new MTextileWear();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    wear.setExcelId(Long.parseLong(idStr));
+                    wear.setTextileWearId(Long.parseLong(idStr));
                 }
-                wear.setCategory(getCellValueAsString(row.getCell(1)));
+                String categoryIdStr = getCellValueAsString(row.getCell(1));
+                if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+                    wear.setCategoryId(Long.parseLong(categoryIdStr));
+                }
                 wear.setTypeOfWear(getCellValueAsString(row.getCell(2)));
-                wear.setAttireType(getCellValueAsString(row.getCell(3)));
-                wear.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
-
+                wear.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    wear.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 textileWears.add(wear);
             }
         }
@@ -353,13 +569,18 @@ public class ExcelUtility {
                 MTextileWearBrand brand = new MTextileWearBrand();
                 String idStr = getCellValueAsString(row.getCell(0));
                 if (idStr != null && !idStr.isEmpty()) {
-                    brand.setExcelId(Long.parseLong(idStr));
+                    brand.setTextileWearBrandId(Long.parseLong(idStr));
                 }
-                brand.setCategory(getCellValueAsString(row.getCell(1)));
+                String categoryIdStr = getCellValueAsString(row.getCell(1));
+                if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+                    brand.setCategoryId(Long.parseLong(categoryIdStr));
+                }
                 brand.setBrandName(getCellValueAsString(row.getCell(2)));
-                brand.setAttireType(getCellValueAsString(row.getCell(3)));
-                brand.setStatus(Boolean.parseBoolean(getCellValueAsString(row.getCell(4))));
-
+                brand.setNameInLocal(getCellValueAsString(row.getCell(3)));
+                String statusStr = getCellValueAsString(row.getCell(4));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    brand.setStatus(Boolean.parseBoolean(statusStr));
+                }
                 brands.add(brand);
             }
         }

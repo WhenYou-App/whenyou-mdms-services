@@ -13,16 +13,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "m_serve_types")
-public class MServeType extends Auditor {
+public class MServeType {
     @Id
     @GeneratedValue
     private UUID id;
 
     @Column
-    private Long excelId;
+    private Long serveTypeId;
 
     @Column
     private String serveType;
+
+    @Column
+    private String nameInLocal;
 
     @Column
     private boolean status;

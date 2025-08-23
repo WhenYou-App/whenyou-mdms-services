@@ -10,9 +10,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MTextileWearBrandDto {
     private UUID id;
-    private Long excelId;
+    private Long textileWearBrandId;
+    private Long categoryId;
     private String brandName;
-    private String category;
-    private String attireType;
+    private String nameInLocal;
     private boolean status;
 }

@@ -9,8 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface MJewelMaterialRepository extends JpaRepository<MJewelMaterial, UUID> {
-    public Optional<MJewelMaterial> findByExcelId(Long excelId);
+    public Optional<MJewelMaterial> findByJewelMaterialId(Long excelId);
 
     public List<MJewelMaterial> findByStatus(boolean status);
-    public List<MJewelMaterial> findByStatusAndMaterialIgnoreCase(boolean status, String material);
 }
