@@ -116,7 +116,7 @@ public class InitService {
         if (vehicleModelNamesFile != null && !vehicleModelNamesFile.isEmpty()) {
             List<MVehicleModelName> modelNames = ExcelUtility.excelToVehicleModelNames(vehicleModelNamesFile.getInputStream());
             for (MVehicleModelName modelName : modelNames) {
-                mVehicleModelNameRepository.findByModelNameId(modelName.getBrandId())
+                mVehicleModelNameRepository.findByModelNameId(modelName.getModelNameId())
                         .ifPresentOrElse(existing -> {
                             existing.setBrandId(modelName.getBrandId());
                             existing.setModelTypeId(modelName.getModelTypeId());

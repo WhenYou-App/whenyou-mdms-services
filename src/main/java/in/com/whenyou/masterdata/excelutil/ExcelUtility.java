@@ -200,14 +200,21 @@ public class ExcelUtility {
                 if (idStr != null && !idStr.isEmpty()) {
                     vehicleModelName.setModelNameId(Long.parseLong(idStr));
                 }
-                vehicleModelName.setBrandId(Long.parseLong(getCellValueAsString(row.getCell(1))));
-                vehicleModelName.setModelTypeId(Long.parseLong(getCellValueAsString(row.getCell(2))));
+                String brandIdStr = getCellValueAsString(row.getCell(1));
+                if (brandIdStr != null && !brandIdStr.isEmpty()) {
+                    vehicleModelName.setBrandId(Long.parseLong(brandIdStr));
+                }
+                String modelTypeIdStr = getCellValueAsString(row.getCell(2));
+                if (modelTypeIdStr != null && !modelTypeIdStr.isEmpty()) {
+                    vehicleModelName.setModelTypeId(Long.parseLong(modelTypeIdStr));
+                }
                 vehicleModelName.setModelName(getCellValueAsString(row.getCell(3)));
                 vehicleModelName.setNameInLocal(getCellValueAsString(row.getCell(4)));
                 String statusStr = getCellValueAsString(row.getCell(5));
                 if (statusStr != null && !statusStr.isEmpty()) {
                     vehicleModelName.setStatus(Boolean.parseBoolean(statusStr));
-                }                vehicleModelNames.add(vehicleModelName);
+                }
+                vehicleModelNames.add(vehicleModelName);
             }
         }
         return vehicleModelNames;
