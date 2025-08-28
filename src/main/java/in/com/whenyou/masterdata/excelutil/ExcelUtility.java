@@ -311,6 +311,7 @@ public class ExcelUtility {
         return purities;
     }
 
+    // Catering Serve type
     public static List<MServeType> excelToServeTypes(InputStream is) throws IOException {
         List<MServeType> serveTypes = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(is)) {
@@ -338,6 +339,36 @@ public class ExcelUtility {
             }
         }
         return serveTypes;
+    }
+
+    // Catering Food Category
+    public static List<MFoodCategory> excelToFoodCategories(InputStream is) throws IOException {
+        List<MFoodCategory> foodCategories = new ArrayList<>();
+        try (Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+            int rowNumber = 0;
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                if (rowNumber++ == 0) continue;
+                if (isRowEmpty(row)) continue;
+
+                MFoodCategory foodCategory = new MFoodCategory();
+                String idStr = getCellValueAsString(row.getCell(0));
+                if (idStr != null && !idStr.isEmpty()) {
+                    foodCategory.setCategoryId(Long.parseLong(idStr));
+                }
+                foodCategory.setCategoryName(getCellValueAsString(row.getCell(1)));
+                foodCategory.setNameInLocal(getCellValueAsString(row.getCell(2)));
+                String statusStr = getCellValueAsString(row.getCell(3));
+                if (statusStr != null && !statusStr.isEmpty()) {
+                    foodCategory.setStatus(Boolean.parseBoolean(statusStr));
+                }
+                foodCategories.add(foodCategory);
+            }
+        }
+        return foodCategories;
     }
 
     // Make Over Category

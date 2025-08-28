@@ -20,6 +20,7 @@ public class InitService {
     @Autowired MMakeOverPackageRepository mMakeOverRepository;
     @Autowired MBoutiqueWearRepository mBoutiqueWearRepository;
     @Autowired MVehicleBrandRepository mVehicleBrandRepository;
+    @Autowired MFoodCategoryRepository mFoodCategoryRepository;
     @Autowired MJewelMaterialRepository mJewelMaterialRepository;
     @Autowired MTextileWearBrandRepository mTextileWearBrandRepository;
     @Autowired MJewelProductTypeRepository mJewelProductTypeRepository;
@@ -27,15 +28,15 @@ public class InitService {
     @Autowired MVehicleModelTypeRepository mVehicleModelTypeRepository;
     @Autowired MVehicleModelNameRepository mVehicleModelNameRepository;
     @Autowired MBoutiqueWearBrandRepository mBoutiqueWearBrandRepository;
-    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
     @Autowired MJewelMaterialPurityRepository mJewelMaterialPurityRepository;
     @Autowired MTextileWearCategoryRepository mTextileWearCategoryRepository;
+    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
 
     @Transactional
     public void initData(MultipartFile districtsFile, MultipartFile pincodesFile,
                          MultipartFile vehicleBrandsFile, MultipartFile vehicleModelTypesFile, MultipartFile vehicleModelNamesFile,
                          MultipartFile jewelsFile, MultipartFile jewelMaterialsFile, MultipartFile jewelMaterialPuritiesFile,
-                         MultipartFile serveTypesFile,
+                         MultipartFile serveTypesFile, MultipartFile foodCategoriesFile,
                          MultipartFile makeOverCategoriesFile, MultipartFile makeOverPackagesFile,
                          MultipartFile boutiqueWearCategoriesFile, MultipartFile boutiqueWearsFile, MultipartFile boutiqueWearBrandsFile,
                          MultipartFile textileWearCategoriesFile, MultipartFile textileWearsFile, MultipartFile textileWearBrandsFile) throws IOException {
@@ -195,6 +196,23 @@ public class InitService {
                         }, () -> {
                             serveType.setId(null);
                             mServeTypeRepository.save(serveType);
+                        });
+            }
+        }
+
+        // process Food Categories
+        if (foodCategoriesFile != null && !foodCategoriesFile.isEmpty()) {
+            List<MFoodCategory> foodCategories = ExcelUtility.excelToFoodCategories(foodCategoriesFile.getInputStream());
+            for (MFoodCategory category : foodCategories) {
+                mFoodCategoryRepository.findByCategoryId(category.getCategoryId())
+                        .ifPresentOrElse(existing -> {
+                            existing.setCategoryName(category.getCategoryName());
+                            existing.setNameInLocal(category.getNameInLocal());
+                            existing.setStatus(category.isStatus());
+                            mFoodCategoryRepository.save(existing);
+                        }, () -> {
+                            category.setId(null);
+                            mFoodCategoryRepository.save(category);
                         });
             }
         }

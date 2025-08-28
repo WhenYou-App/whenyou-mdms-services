@@ -20,6 +20,7 @@ public class MasterDataService {
     @Autowired MMakeOverPackageRepository mMakeOverRepository;
     @Autowired MBoutiqueWearRepository mBoutiqueWearRepository;
     @Autowired MVehicleBrandRepository mVehicleBrandRepository;
+    @Autowired MFoodCategoryRepository mFoodCategoryRepository;
     @Autowired MJewelMaterialRepository mJewelMaterialRepository;
     @Autowired MTextileWearBrandRepository mTextileWearBrandRepository;
     @Autowired MJewelProductTypeRepository mJewelProductTypeRepository;
@@ -27,9 +28,10 @@ public class MasterDataService {
     @Autowired MVehicleModelTypeRepository mVehicleModelTypeRepository;
     @Autowired MVehicleModelNameRepository mVehicleModelNameRepository;
     @Autowired MBoutiqueWearBrandRepository mBoutiqueWearBrandRepository;
-    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
     @Autowired MJewelMaterialPurityRepository mJewelMaterialPurityRepository;
     @Autowired MTextileWearCategoryRepository mTextileWearCategoryRepository;
+    @Autowired MBoutiqueWearCategoryRepository mBoutiqueWearCategoryRepository;
+
 
     //=========================================== District Service ======================================================
 
@@ -91,6 +93,10 @@ public class MasterDataService {
 
     public List<MServeTypeDto> getActiveServeTypes() {
         return mServeTypeRepository.findByStatus(true).stream().map(fromServeType()).collect(Collectors.toList());
+    }
+
+    public List<MFoodCategoryDto> getActiveFoodCategories() {
+        return mFoodCategoryRepository.findByStatus(true).stream().map(fromFoodCategory()).collect(Collectors.toList());
     }
 
     //=========================================== Make Over Service ======================================================
@@ -278,6 +284,23 @@ public class MasterDataService {
                         .serveType(mServeType.getServeType())
                         .nameInLocal(mServeType.getNameInLocal())
                         .status(mServeType.isStatus())
+                        .build();
+            }
+        };
+    }
+
+    //=========================================== Catering Food category Converter Function ======================================================
+
+    public Function<MFoodCategory, MFoodCategoryDto> fromFoodCategory() {
+        return new Function<MFoodCategory, MFoodCategoryDto>() {
+            @Override
+            public MFoodCategoryDto apply(MFoodCategory foodCategory) {
+                return MFoodCategoryDto.builder()
+                        .id(foodCategory.getId())
+                        .categoryId(foodCategory.getCategoryId())
+                        .categoryName(foodCategory.getCategoryName())
+                        .nameInLocal(foodCategory.getNameInLocal())
+                        .status(foodCategory.isStatus())
                         .build();
             }
         };

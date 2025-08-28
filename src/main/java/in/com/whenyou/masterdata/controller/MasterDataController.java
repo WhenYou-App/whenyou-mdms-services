@@ -71,6 +71,11 @@ public class MasterDataController {
         return ResponseEntity.ok(masterDataService.getActiveServeTypes());
     }
 
+    @GetMapping("/catering/food/categories")
+    public ResponseEntity<List<MFoodCategoryDto>> getActiveFoodCategories() {
+        return ResponseEntity.ok(masterDataService.getActiveFoodCategories());
+    }
+
     //=========================================== Make Over Controller ======================================================
 
     @GetMapping("/make-over/categories")

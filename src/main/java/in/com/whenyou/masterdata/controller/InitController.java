@@ -28,6 +28,7 @@ public class InitController {
                                             @RequestParam(value = "jewelMaterialsFile", required = false) MultipartFile jewelMaterialsFile,
                                             @RequestParam(value = "jewelMaterialPuritiesFile", required = false) MultipartFile jewelMaterialPuritiesFile,
                                             @RequestParam(value = "serveTypesFile", required = false) MultipartFile serveTypesFile,
+                                            @RequestParam(value = "foodCategoriesFile", required = false) MultipartFile foodCategoriesFile,
                                             @RequestParam(value = "makeOverCategoriesFile", required = false) MultipartFile makeOverCategoriesFile,
                                             @RequestParam(value = "makeOverPackagesFile", required = false) MultipartFile makeOverPackagesFile,
                                             @RequestParam(value = "boutiqueWearCategoriesFile", required = false) MultipartFile boutiqueWearCategoriesFile,
@@ -37,7 +38,7 @@ public class InitController {
                                             @RequestParam(value = "textileWearsFile", required = false) MultipartFile textileWearsFile,
                                             @RequestParam(value = "textileWearBrandsFile", required = false) MultipartFile textileWearBrandsFile) {
         try {
-            initService.initData(districtsFile, pincodesFile, vehiclesBrandsFile, vehicleModelTypesFile, vehicleModelNamesFile, jewelsFile, jewelMaterialsFile, jewelMaterialPuritiesFile, serveTypesFile, makeOverCategoriesFile, makeOverPackagesFile, boutiqueWearCategoriesFile, boutiqueWearsFile, boutiqueWearBrandsFile, textileWearCategoriesFile, textileWearsFile, textileWearBrandsFile);
+            initService.initData(districtsFile, pincodesFile, vehiclesBrandsFile, vehicleModelTypesFile, vehicleModelNamesFile, jewelsFile, jewelMaterialsFile, jewelMaterialPuritiesFile, serveTypesFile, foodCategoriesFile, makeOverCategoriesFile, makeOverPackagesFile, boutiqueWearCategoriesFile, boutiqueWearsFile, boutiqueWearBrandsFile, textileWearCategoriesFile, textileWearsFile, textileWearBrandsFile);
             return ResponseEntity.ok(Message.builder().status(true).message("Initialization completed successfully!").build());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Message.builder().status(false).message("Error processing files: " + e.getMessage()).build());
