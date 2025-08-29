@@ -161,7 +161,7 @@ CREATE TABLE m_textile_wear_brands (
 -- Table: m_food_categories
 CREATE TABLE m_food_categories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    food_category_id BIGINT NOT NULL UNIQUE,
+    category_id BIGINT NOT NULL UNIQUE,
     category_name VARCHAR(150) NOT NULL,
     name_in_local VARCHAR(150),
     status BOOLEAN DEFAULT TRUE
