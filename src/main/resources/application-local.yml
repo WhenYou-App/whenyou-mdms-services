@@ -42,21 +42,10 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 200MB
 
-  security:
-    jwt:
-      secret: IwXWuCZRv/a7SXuV/GIZvO/zELE00N5jYoXXoF3Y4ZPl+A62V4nwthL13vCzQiJ17DzWYkroiAonYbRX9fHHwA==
-      expiration: 86400000
-      header: Authorization
-      prefix: Bearer
-sms:
-  api:
-    url: https://thesmsbuddy.com/api/v1/sms/send
 
-login-service:
-  url: http://whenyou-vendor-onboarding-services
 
 
 
